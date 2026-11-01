@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+:root {
+  --color-primario: #2C1A1D;
+  --color-fondo: #FDFBF7;
+  --color-superficie: #FFFFFF;
+  --color-texto: #1F1A1B;
+  --color-texto-suave: #6B5E62;
+  --color-borde: #E7DFD8;
+  --color-accion: #C47335;
+  --color-exito: #4E6E58;
+  --color-error: #B91C1C;
+  --radio-chico: 6px;
+  --radio-medio: 10px;
+}
+
+@theme {
+  --font-serif: "Young Serif", serif;
+  --font-sans: "Figtree", sans-serif;
+  --color-primario: var(--color-primario);
+  --color-fondo: var(--color-fondo);
+  --color-superficie: var(--color-superficie);
+  --color-texto: var(--color-texto);
+  --color-texto-suave: var(--color-texto-suave);
+  --color-borde: var(--color-borde);
+  --color-accion: var(--color-accion);
+  --color-exito: var(--color-exito);
+  --color-error: var(--color-error);
+  --radius-chico: var(--radio-chico);
+  --radius-medio: var(--radio-medio);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+/* Números con ancho fijo para precios y temporizadores */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

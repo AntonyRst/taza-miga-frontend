@@ -1,0 +1,84 @@
+export const es = {
+  comun: {
+    nombreApp: 'Taza & Miga',
+    cargando: 'Cargando...',
+    guardar: 'Guardar',
+    cancelar: 'Cancelar',
+    eliminar: 'Eliminar',
+    desactivar: 'Desactivar',
+    activar: 'Activar',
+    editar: 'Editar',
+    volver: 'Volver',
+    cerrar: 'Cerrar',
+    errorConexion: 'No se pudo conectar con el servidor',
+    sinResultados: 'No se encontraron resultados'
+  },
+  navegacion: {
+    inicio: 'Menú',
+    miPedido: 'Mi Pedido',
+    kds: 'Comandas KDS',
+    admin: 'Administración',
+    cerrarSesion: 'Cerrar sesión',
+    accesoPersonal: 'Acceso Personal'
+  },
+  catalogo: {
+    subtitulo: 'Pide desde tu mesa o para recoger.',
+    buscarPlaceholder: 'Buscar café, pan, bebidas...',
+    todasLasCategorias: 'Todos los productos',
+    agotado: 'Agotado',
+    agregarAlPedido: 'Agregar al pedido',
+    verMiPedido: 'Ver mi pedido',
+    carritoVacio: 'Tu carrito está vacío',
+    instruccionesEspeciales: 'Instrucciones especiales',
+    cantidad: 'Cantidad',
+    total: 'Total',
+    confirmarPedido: 'Confirmar pedido',
+    sinProductos: 'No hay productos disponibles por el momento'
+  },
+  seguimiento: {
+    titulo: 'Seguimiento de tu pedido',
+    pedidoNumero: 'Pedido #',
+    estadoRecibido: 'Recibido',
+    estadoPreparacion: 'En preparación',
+    estadoListo: 'Listo para recoger',
+    estadoEntregado: 'Entregado',
+    estadoCancelado: 'Cancelado',
+    motivoCancelacion: 'Motivo de cancelación:',
+    perdisteTuPedido: '¿Perdiste tu pedido? Búscalo aquí',
+    buscarPedidoBtn: 'Buscar pedido',
+    noEncontrado: 'No encontramos ese pedido'
+  },
+  login: {
+    titulo: 'Acceso para Personal',
+    subtitulo: 'Ingresa con tus credenciales de barista, gerente o dueño.',
+    correoLabel: 'Correo electrónico',
+    passwordLabel: 'Contraseña',
+    ingresarBtn: 'Iniciar sesión',
+    olvidoPassword: '¿Olvidaste tu contraseña? Pídele a tu gerente que la restablezca.',
+    errorCredenciales: 'Correo o contraseña incorrectos',
+    sesionExpirada: 'Tu sesión ha expirado, ingresa nuevamente'
+  },
+  kds: {
+    titulo: 'Panel de Barista (KDS)',
+    sinPedidos: 'Aún no hay pedidos. Aparecerán aquí cuando un cliente confirme uno.',
+    iniciarPreparacion: 'Iniciar preparación',
+    marcarListo: 'Marcar listo',
+    entregar: 'Entregar',
+    registrarPago: 'Registrar pago',
+    cancelarPedido: 'Cancelar pedido',
+    pagado: 'Pagado',
+    sinPagar: 'Sin pagar',
+    imprimirTicket: 'Imprimir ticket'
+  },
+  admin: {
+    titulo: 'Panel de Administración',
+    pestanaResumen: 'Resumen y Métricas',
+    pestanaProductos: 'Productos y Menú',
+    pestanaCategorias: 'Categorías',
+    pestanaGrupos: 'Grupos de Opciones',
+    pestanaPersonal: 'Personal',
+    pestanaSucursales: 'Sucursales',
+    pestanaAuditoria: 'Auditoría',
+    soloDueno: 'Esta sección es exclusiva para el dueño'
+  }
+};
