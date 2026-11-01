@@ -1,20 +1,25 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useIdioma } from '../context/IdiomaContext.jsx';
-import { Coffee, LogOut, BarChart3, UtensilsCrossed, Users, Store, ShieldAlert, KeyRound } from 'lucide-react';
+import { Coffee, LogOut, BarChart3, UtensilsCrossed, Tags, Sliders, Users, Store, ShieldAlert, KeyRound } from 'lucide-react';
 import ModalCambiarPassword from '../components/ModalCambiarPassword.jsx';
+import AdminProductos from '../components/admin/AdminProductos.jsx';
+import AdminCategorias from '../components/admin/AdminCategorias.jsx';
+import AdminGruposOpciones from '../components/admin/AdminGruposOpciones.jsx';
 
 export default function Admin() {
   const { usuario, cerrarSesion } = useAuth();
   const { t } = useIdioma();
-  const [seccionActiva, setSeccionActiva] = useState('resumen');
+  const [seccionActiva, setSeccionActiva] = useState('productos');
   const [mostrarModalPassword, setMostrarModalPassword] = useState(false);
 
   const esDueno = usuario?.rol === 'DUENO';
 
   const secciones = [
     { id: 'resumen', etiqueta: t.admin.pestanaResumen, icono: BarChart3 },
-    { id: 'menu', etiqueta: t.admin.pestanaProductos, icono: UtensilsCrossed },
+    { id: 'productos', etiqueta: t.admin.pestanaProductos, icono: UtensilsCrossed },
+    { id: 'categorias', etiqueta: t.admin.pestanaCategorias, icono: Tags },
+    { id: 'grupos', etiqueta: t.admin.pestanaGrupos, icono: Sliders },
     { id: 'personal', etiqueta: t.admin.pestanaPersonal, icono: Users },
     { id: 'sucursales', etiqueta: t.admin.pestanaSucursales, icono: Store, soloDueno: true },
     { id: 'auditoria', etiqueta: t.admin.pestanaAuditoria, icono: ShieldAlert, soloDueno: true }
@@ -83,13 +88,21 @@ export default function Admin() {
         </aside>
 
         {/* Panel de contenido de la sección activa */}
-        <main className="flex-1 bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-6">
-          <h2 className="text-lg font-serif font-bold text-[var(--color-primario)] mb-4">
-            {secciones.find((s) => s.id === seccionActiva)?.etiqueta}
-          </h2>
-          <div className="p-8 text-center border border-dashed border-[var(--color-borde)] rounded-[var(--radio-chico)] text-[var(--color-texto-suave)] text-sm">
-            {t.comun.cargando}
-          </div>
+        <main className="flex-1 bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4 sm:p-6 shadow-xs">
+          {seccionActiva === 'productos' && <AdminProductos />}
+          {seccionActiva === 'categorias' && <AdminCategorias />}
+          {seccionActiva === 'grupos' && <AdminGruposOpciones />}
+
+          {!['productos', 'categorias', 'grupos'].includes(seccionActiva) && (
+            <div>
+              <h2 className="text-lg font-serif font-bold text-[var(--color-primario)] mb-4">
+                {secciones.find((s) => s.id === seccionActiva)?.etiqueta}
+              </h2>
+              <div className="p-8 text-center border border-dashed border-[var(--color-borde)] rounded-[var(--radio-chico)] text-[var(--color-texto-suave)] text-xs font-mono">
+                Módulo en desarrollo (se completará en la siguiente entrega).
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
