@@ -80,5 +80,17 @@ export const es = {
     pestanaSucursales: 'Sucursales',
     pestanaAuditoria: 'Auditoría',
     soloDueno: 'Esta sección es exclusiva para el dueño'
+  },
+  password: {
+    titulo: 'Cambiar contraseña',
+    subtituloTemporal: 'Debes cambiar tu contraseña temporal antes de continuar.',
+    subtituloNormal: 'Ingresa tu contraseña actual y define una nueva de al menos 8 caracteres.',
+    passwordActual: 'Contraseña actual',
+    passwordNueva: 'Nueva contraseña',
+    passwordConfirmar: 'Confirmar nueva contraseña',
+    cambiarBtn: 'Actualizar contraseña',
+    exito: 'Contraseña actualizada con éxito',
+    errorNoCoinciden: 'Las contraseñas no coinciden',
+    errorLongitud: 'La nueva contraseña debe tener al menos 8 caracteres'
   }
 };

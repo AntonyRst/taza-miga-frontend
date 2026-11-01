@@ -80,5 +80,17 @@ export const en = {
     pestanaSucursales: 'Branches',
     pestanaAuditoria: 'Audit Log',
     soloDueno: 'This section is exclusive for the owner'
+  },
+  password: {
+    titulo: 'Change Password',
+    subtituloTemporal: 'You must change your temporary password before continuing.',
+    subtituloNormal: 'Enter your current password and choose a new one of at least 8 characters.',
+    passwordActual: 'Current password',
+    passwordNueva: 'New password',
+    passwordConfirmar: 'Confirm new password',
+    cambiarBtn: 'Update password',
+    exito: 'Password updated successfully',
+    errorNoCoinciden: 'Passwords do not match',
+    errorLongitud: 'The new password must be at least 8 characters long'
   }
 };

@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useIdioma } from '../context/IdiomaContext.jsx';
-import { Coffee, LogOut, BarChart3, UtensilsCrossed, Users, Store, ShieldAlert } from 'lucide-react';
+import { Coffee, LogOut, BarChart3, UtensilsCrossed, Users, Store, ShieldAlert, KeyRound } from 'lucide-react';
+import ModalCambiarPassword from '../components/ModalCambiarPassword.jsx';
 
 export default function Admin() {
   const { usuario, cerrarSesion } = useAuth();
   const { t } = useIdioma();
   const [seccionActiva, setSeccionActiva] = useState('resumen');
+  const [mostrarModalPassword, setMostrarModalPassword] = useState(false);
 
   const esDueno = usuario?.rol === 'DUENO';
 
@@ -32,7 +34,14 @@ export default function Admin() {
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setMostrarModalPassword(true)}
+            className="flex items-center gap-1.5 text-xs text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] transition-colors cursor-pointer"
+          >
+            <KeyRound className="w-4 h-4" />
+            <span>{t.password.titulo}</span>
+          </button>
           <button
             onClick={cerrarSesion}
             className="flex items-center gap-1.5 text-xs text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] transition-colors cursor-pointer"
@@ -42,6 +51,10 @@ export default function Admin() {
           </button>
         </div>
       </header>
+
+      {mostrarModalPassword && (
+        <ModalCambiarPassword onCerrar={() => setMostrarModalPassword(false)} />
+      )}
 
       <div className="flex-1 flex flex-col sm:flex-row max-w-7xl w-full mx-auto p-4 sm:p-6 gap-6">
         {/* Barra lateral de navegación interna */}

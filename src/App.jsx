@@ -7,6 +7,7 @@ import Seguimiento from './pages/Seguimiento.jsx';
 import StaffAccess from './pages/StaffAccess.jsx';
 import Kds from './pages/Kds.jsx';
 import Admin from './pages/Admin.jsx';
+import ModalCambiarPassword from './components/ModalCambiarPassword.jsx';
 
 /**
  * Componente para proteger rutas según autenticación y rol (RN-03, HU-02).
@@ -25,6 +26,18 @@ function RutaProtegida({ children, rolesPermitidos = [] }) {
       return <Navigate to="/kds" replace />;
     }
     return <Navigate to="/admin" replace />;
+  }
+
+  // RN-09: Si tiene contraseña temporal activa, forzar modal de cambio de contraseña
+  if (usuario.debe_cambiar_password) {
+    return (
+      <div className="relative">
+        <ModalCambiarPassword obligatorio={true} />
+        <div className="pointer-events-none opacity-20 filter blur-xs">
+          {children}
+        </div>
+      </div>
+    );
   }
 
   return children;
