@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { IdiomaProvider } from './context/IdiomaContext.jsx';
+import { CarritoProvider } from './context/CarritoContext.jsx';
 
 import Catalogo from './pages/Catalogo.jsx';
 import Seguimiento from './pages/Seguimiento.jsx';
@@ -48,33 +49,35 @@ export default function App() {
     <BrowserRouter>
       <IdiomaProvider>
         <AuthProvider>
-          <Routes>
-            {/* Rutas Públicas */}
-            <Route path="/" element={<Catalogo />} />
-            <Route path="/order/:codigo" element={<Seguimiento />} />
-            <Route path="/staff-access" element={<StaffAccess />} />
+          <CarritoProvider>
+            <Routes>
+              {/* Rutas Públicas */}
+              <Route path="/" element={<Catalogo />} />
+              <Route path="/order/:codigo" element={<Seguimiento />} />
+              <Route path="/staff-access" element={<StaffAccess />} />
 
-            {/* Rutas Protegidas del Personal */}
-            <Route
-              path="/kds"
-              element={
-                <RutaProtegida rolesPermitidos={['BARISTA', 'GERENTE', 'DUENO']}>
-                  <Kds />
-                </RutaProtegida>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <RutaProtegida rolesPermitidos={['GERENTE', 'DUENO']}>
-                  <Admin />
-                </RutaProtegida>
-              }
-            />
+              {/* Rutas Protegidas del Personal */}
+              <Route
+                path="/kds"
+                element={
+                  <RutaProtegida rolesPermitidos={['BARISTA', 'GERENTE', 'DUENO']}>
+                    <Kds />
+                  </RutaProtegida>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <RutaProtegida rolesPermitidos={['GERENTE', 'DUENO']}>
+                    <Admin />
+                  </RutaProtegida>
+                }
+              />
 
-            {/* Redirección por defecto */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+              {/* Redirección por defecto */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </CarritoProvider>
         </AuthProvider>
       </IdiomaProvider>
     </BrowserRouter>
