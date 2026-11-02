@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { useIdioma } from '../context/IdiomaContext.jsx';
 import { useCarrito } from '../context/CarritoContext.jsx';
 import {
@@ -9,10 +10,13 @@ import {
   X,
   AlertCircle,
   Image as ImageIcon,
-  RotateCcw
+  RotateCcw,
+  Clock,
+  ArrowRight
 } from 'lucide-react';
 import ModalPersonalizarProducto from '../components/cliente/ModalPersonalizarProducto.jsx';
 import DrawerCarrito from '../components/cliente/DrawerCarrito.jsx';
+import ModalConfirmarPedido from '../components/cliente/ModalConfirmarPedido.jsx';
 
 export default function Catalogo() {
   const { t, idioma, cambiarIdioma } = useIdioma();
@@ -29,9 +33,13 @@ export default function Catalogo() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  // Estados de modales interactivos (HU-07, HU-08)
+  // Estados de modales interactivos (HU-07, HU-08, HU-11)
   const [productoParaPersonalizar, setProductoParaPersonalizar] = useState(null);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
+  const [mostrarConfirmarPedido, setMostrarConfirmarPedido] = useState(false);
+
+  // Estado del pedido activo guardado en localStorage (HU-12)
+  const [pedidoActivo, setPedidoActivo] = useState(null);
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -52,9 +60,48 @@ export default function Catalogo() {
     }
   }, [apiUrl, t.comun.errorConexion, sincronizarDisponibilidad]);
 
+  // Verificar si hay pedido activo en curso (HU-12)
+  const verificarPedidoActivo = useCallback(async () => {
+    const codigoGuardado = localStorage.getItem('taza_miga_pedido_activo');
+    if (!codigoGuardado) {
+      setPedidoActivo(null);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${apiUrl}/publico/ordenes/seguimiento/${codigoGuardado}`);
+      if (!res.ok) {
+        localStorage.removeItem('taza_miga_pedido_activo');
+        setPedidoActivo(null);
+        return;
+      }
+
+      const data = await res.json();
+
+      // Si está en preparación, recibido o listo, mantener activo
+      if (['RECIBIDO', 'PREPARACION', 'LISTO'].includes(data.estado)) {
+        setPedidoActivo(data);
+      } else {
+        // ENTREGADO o CANCELADO deja de mostrarse como activo (HU-12)
+        localStorage.removeItem('taza_miga_pedido_activo');
+        setPedidoActivo(null);
+      }
+    } catch {
+      setPedidoActivo(null);
+    }
+  }, [apiUrl]);
+
   useEffect(() => {
     cargarMenu();
-  }, [cargarMenu]);
+    verificarPedidoActivo();
+
+    // Comprobar estado del pedido activo cada 5 segundos si existe
+    const intervalo = setInterval(() => {
+      verificarPedidoActivo();
+    }, 5000);
+
+    return () => clearInterval(intervalo);
+  }, [cargarMenu, verificarPedidoActivo]);
 
   // Filtrado de productos por categoría y búsqueda en tiempo real (HU-06)
   const productosFiltrados = menu.productos.filter((prod) => {
@@ -82,6 +129,19 @@ export default function Catalogo() {
 
   const handleAgregarAlCarrito = (datosPersonalizados) => {
     agregarAlCarrito(datosPersonalizados);
+  };
+
+  const obtenerEtiquetaEstado = (estado) => {
+    switch (estado) {
+      case 'RECIBIDO':
+        return t.seguimiento.estadoRecibido;
+      case 'PREPARACION':
+        return t.seguimiento.estadoPreparacion;
+      case 'LISTO':
+        return t.seguimiento.estadoListo;
+      default:
+        return estado;
+    }
   };
 
   return (
@@ -136,8 +196,41 @@ export default function Catalogo() {
         </div>
       </section>
 
-      {/* Búsqueda y Filtros de Categoría (HU-06) */}
+      {/* Contenido principal */}
       <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 space-y-6">
+        {/* Tarjeta de Pedido Activo (HU-12: solo visible si hay pedido en curso) */}
+        {pedidoActivo && (
+          <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0">
+                <Clock className="w-5 h-5 animate-pulse" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-serif font-bold text-sm text-[var(--color-primario)]">
+                    {t.seguimiento.pedidoActivoTitulo} (#{pedidoActivo.numeroOrden})
+                  </span>
+                  <span className="text-[11px] px-2 py-0.5 rounded font-semibold bg-stone-100 text-[var(--color-primario)] border border-[var(--color-borde)]">
+                    {obtenerEtiquetaEstado(pedidoActivo.estado)}
+                  </span>
+                </div>
+                <p className="text-xs text-[var(--color-texto-suave)] mt-0.5">
+                  {pedidoActivo.nombreCliente} • {t.seguimiento.actualizandoEnVivo}
+                </p>
+              </div>
+            </div>
+
+            <Link
+              to={`/order/${pedidoActivo.codigoSeguimiento}`}
+              className="px-4 py-2 bg-[var(--color-accion)] text-white text-xs font-semibold rounded-[var(--radio-chico)] hover:opacity-90 transition-opacity text-center cursor-pointer inline-flex items-center justify-center gap-1.5 shadow-xs"
+            >
+              <span>{t.seguimiento.verMiPedido}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
+
+        {/* Búsqueda (HU-06) */}
         <div className="relative max-w-md mx-auto">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-texto-suave)]" />
           <input
@@ -315,9 +408,15 @@ export default function Catalogo() {
         abierto={mostrarCarrito}
         onCerrar={() => setMostrarCarrito(false)}
         onConfirmarPedido={() => {
-          // Nota: El flujo de confirmación de pedido se completará en la Entrega 3 (HU-11)
-          alert('El flujo de confirmación y seguimiento de pedido iniciará en la Entrega 3 (HU-11).');
+          setMostrarCarrito(false);
+          setMostrarConfirmarPedido(true);
         }}
+      />
+
+      {/* Modal de Confirmación de Pedido (HU-11) */}
+      <ModalConfirmarPedido
+        abierto={mostrarConfirmarPedido}
+        onCerrar={() => setMostrarConfirmarPedido(false)}
       />
     </div>
   );
