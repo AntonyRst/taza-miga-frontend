@@ -627,8 +627,22 @@ function ModalTrasladarPersonal({ empleado, sucursales, onCerrar, onExito }) {
   const { fetchConToken } = useAuth();
   const { t } = useIdioma();
   const [nuevaSucursalId, setNuevaSucursalId] = useState('');
+  const [pedidosEnCurso, setPedidosEnCurso] = useState(0);
   const [error, setError] = useState('');
   const [procesando, setProcesando] = useState(false);
+
+  useEffect(() => {
+    if (empleado?.id) {
+      fetchConToken(`/api/admin/personal/${empleado.id}/pedidos-en-curso`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && typeof data.pedidosEnCurso === 'number') {
+            setPedidosEnCurso(data.pedidosEnCurso);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [empleado, fetchConToken]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -675,6 +689,19 @@ function ModalTrasladarPersonal({ empleado, sucursales, onCerrar, onExito }) {
           Mover a <strong>{empleado.nombre}</strong> ({empleado.cargo}) desde{' '}
           <em>{empleado.sucursalNombre || 'Sin asignar'}</em> hacia una nueva sucursal (HU-21).
         </p>
+
+        {/* Alerta de pedidos en curso en la sucursal actual (HU-21) */}
+        {pedidosEnCurso > 0 && (
+          <div className="p-3 bg-amber-50 text-amber-900 border border-amber-200 rounded-[var(--radio-chico)] text-xs flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 shrink-0 text-amber-700 mt-0.5" />
+            <div>
+              <p className="font-semibold">Atención: Pedidos en curso</p>
+              <p className="text-[11px] text-amber-800 mt-0.5">
+                La sucursal actual tiene <strong>{pedidosEnCurso}</strong> pedido(s) activo(s) en preparación o recibidos. Si trasladas al empleado ahora, asegúrate de que el personal restante cubra los despachos.
+              </p>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="p-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-[var(--radio-chico)] text-xs">
