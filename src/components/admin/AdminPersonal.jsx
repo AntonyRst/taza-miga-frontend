@@ -231,7 +231,7 @@ export default function AdminPersonal() {
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
 
-                      {emp.accesoSistema && (
+                      {emp.accesoSistema && emp.rol !== 'DUENO' && (esDueno || (usuario?.rol === 'GERENTE' && emp.rol === 'BARISTA' && emp.sucursalId === usuario.sucursal_id)) && (
                         <button
                           onClick={() => setEmpleadoParaReset(emp)}
                           className="p-1.5 text-amber-700 hover:text-amber-900 rounded-[var(--radio-chico)] hover:bg-amber-50 cursor-pointer"
