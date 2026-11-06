@@ -9,7 +9,8 @@ import {
   AlertCircle,
   Clock,
   CheckCircle2,
-  XCircle
+  XCircle,
+  UserCheck
 } from 'lucide-react';
 import ModalTicketImpresion from '../kds/ModalTicketImpresion.jsx';
 
@@ -24,8 +25,33 @@ export default function AdminHistorialPedidos() {
   // Filtros
   const [estado, setEstado] = useState('TODOS');
   const [metodoPago, setMetodoPago] = useState('TODOS');
+  const [baristaId, setBaristaId] = useState('');
+  const [sucursalId, setSucursalId] = useState('');
+  const [fechaInicio, setFechaInicio] = useState('');
+  const [fechaFin, setFechaFin] = useState('');
   const [busqueda, setBusqueda] = useState('');
   const [ticketParaVer, setTicketParaVer] = useState(null);
+
+  // Listas auxiliares para selectores
+  const [baristas, setBaristas] = useState([]);
+  const [sucursales, setSucursales] = useState([]);
+
+  const esDueno = usuario?.rol === 'DUENO';
+
+  // Cargar lista de baristas y sucursales (para Dueño)
+  useEffect(() => {
+    fetchConToken('/api/admin/personal?cargo=BARISTA')
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setBaristas(Array.isArray(data) ? data : []))
+      .catch(() => {});
+
+    if (esDueno) {
+      fetchConToken('/api/admin/sucursales')
+        .then((res) => (res.ok ? res.json() : []))
+        .then((data) => setSucursales(Array.isArray(data) ? data : []))
+        .catch(() => {});
+    }
+  }, [esDueno, fetchConToken]);
 
   const cargarHistorial = useCallback(async () => {
     setCargando(true);
@@ -34,18 +60,22 @@ export default function AdminHistorialPedidos() {
       const params = new URLSearchParams();
       if (estado !== 'TODOS') params.append('estado', estado);
       if (metodoPago !== 'TODOS') params.append('metodoPago', metodoPago);
+      if (baristaId) params.append('baristaId', baristaId);
+      if (sucursalId) params.append('sucursalId', sucursalId);
+      if (fechaInicio) params.append('fechaInicio', fechaInicio);
+      if (fechaFin) params.append('fechaFin', fechaFin);
       if (busqueda) params.append('q', busqueda);
 
       const res = await fetchConToken(`/api/admin/pedidos-historial?${params.toString()}`);
       if (!res.ok) throw new Error('Error al cargar el historial de pedidos');
       const data = await res.json();
-      setPedidos(data);
+      setPedidos(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message);
     } finally {
       setCargando(false);
     }
-  }, [fetchConToken, estado, metodoPago, busqueda]);
+  }, [fetchConToken, estado, metodoPago, baristaId, sucursalId, fechaInicio, fechaFin, busqueda]);
 
   useEffect(() => {
     cargarHistorial();
@@ -93,41 +123,113 @@ export default function AdminHistorialPedidos() {
         </div>
       </div>
 
-      {/* Barra de filtros */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[var(--color-fondo)] p-3 rounded-[var(--radio-chico)] border border-[var(--color-borde)] text-xs">
-        <div className="relative">
-          <Search className="w-4 h-4 absolute left-2.5 top-2.5 text-[var(--color-texto-suave)]" />
-          <input
-            type="text"
-            placeholder={t.admin.buscarClienteONumero}
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-hidden"
-          />
+      {/* Barra de filtros (HU-23: fecha, estado, método de pago y barista) */}
+      <div className="space-y-3 bg-[var(--color-fondo)] p-3 rounded-[var(--radio-chico)] border border-[var(--color-borde)] text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Buscador */}
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-2.5 top-2.5 text-[var(--color-texto-suave)]" />
+            <input
+              type="text"
+              placeholder={t.admin.buscarClienteONumero}
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-hidden"
+            />
+          </div>
+
+          {/* Estado */}
+          <select
+            value={estado}
+            onChange={(e) => setEstado(e.target.value)}
+            className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] px-2.5 py-1.5 focus:outline-hidden"
+          >
+            <option value="TODOS">{t.admin.todosLosEstados}</option>
+            <option value="RECIBIDO">Recibido</option>
+            <option value="PREPARACION">En preparación</option>
+            <option value="LISTO">Listo</option>
+            <option value="ENTREGADO">Entregado</option>
+            <option value="CANCELADO">Cancelado</option>
+          </select>
+
+          {/* Método de pago */}
+          <select
+            value={metodoPago}
+            onChange={(e) => setMetodoPago(e.target.value)}
+            className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] px-2.5 py-1.5 focus:outline-hidden"
+          >
+            <option value="TODOS">{t.admin.todosLosMetodos}</option>
+            <option value="BARRA">Pago en barra</option>
+            <option value="TARJETA_DEMO">Tarjeta simulada</option>
+          </select>
+
+          {/* Barista que despachó */}
+          <select
+            value={baristaId}
+            onChange={(e) => setBaristaId(e.target.value)}
+            className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] px-2.5 py-1.5 focus:outline-hidden"
+          >
+            <option value="">{t.admin.todosLosBaristas}</option>
+            {baristas.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.nombre}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <select
-          value={estado}
-          onChange={(e) => setEstado(e.target.value)}
-          className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] px-2.5 py-1.5 focus:outline-hidden"
-        >
-          <option value="TODOS">{t.admin.todosLosEstados}</option>
-          <option value="RECIBIDO">Recibido</option>
-          <option value="PREPARACION">En preparación</option>
-          <option value="LISTO">Listo</option>
-          <option value="ENTREGADO">Entregado</option>
-          <option value="CANCELADO">Cancelado</option>
-        </select>
+        {/* Fila secundaria: Fechas y Sucursal (Dueño) */}
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[var(--color-borde)]">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-[var(--color-accion)]" />
+            <span className="text-[11px] text-[var(--color-texto-suave)]">Desde:</span>
+            <input
+              type="date"
+              value={fechaInicio}
+              onChange={(e) => setFechaInicio(e.target.value)}
+              className="px-2 py-1 bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)]"
+            />
+            <span className="text-[11px] text-[var(--color-texto-suave)]">Hasta:</span>
+            <input
+              type="date"
+              value={fechaFin}
+              onChange={(e) => setFechaFin(e.target.value)}
+              className="px-2 py-1 bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)]"
+            />
+          </div>
 
-        <select
-          value={metodoPago}
-          onChange={(e) => setMetodoPago(e.target.value)}
-          className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] px-2.5 py-1.5 focus:outline-hidden"
-        >
-          <option value="TODOS">{t.admin.todosLosMetodos}</option>
-          <option value="BARRA">Pago en barra</option>
-          <option value="TARJETA_DEMO">Tarjeta simulada</option>
-        </select>
+          {esDueno && (
+            <select
+              value={sucursalId}
+              onChange={(e) => setSucursalId(e.target.value)}
+              className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] px-2.5 py-1 focus:outline-hidden"
+            >
+              <option value="">Todas las sucursales</option>
+              {sucursales.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.nombre}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {(fechaInicio || fechaFin || baristaId || sucursalId || busqueda || estado !== 'TODOS' || metodoPago !== 'TODOS') && (
+            <button
+              onClick={() => {
+                setEstado('TODOS');
+                setMetodoPago('TODOS');
+                setBaristaId('');
+                setSucursalId('');
+                setFechaInicio('');
+                setFechaFin('');
+                setBusqueda('');
+              }}
+              className="text-xs text-[var(--color-accion)] underline cursor-pointer ml-auto"
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
       </div>
 
       {cargando ? (
@@ -147,6 +249,7 @@ export default function AdminHistorialPedidos() {
                 <th className="px-3 py-2.5">Fecha</th>
                 <th className="px-3 py-2.5">Cliente</th>
                 <th className="px-3 py-2.5">Sucursal / Modalidad</th>
+                <th className="px-3 py-2.5">{t.admin.metodoPagoCol}</th>
                 <th className="px-3 py-2.5">Total</th>
                 <th className="px-3 py-2.5">Estado</th>
                 <th className="px-3 py-2.5 text-right">Ticket</th>
@@ -175,6 +278,14 @@ export default function AdminHistorialPedidos() {
                       {o.tipoEntrega === 'MESA' ? `Mesa ${o.numeroMesa}` : 'Para llevar'}
                     </span>
                   </td>
+                  <td className="px-3 py-3">
+                    <span className="font-medium text-[var(--color-primario)] block">
+                      {o.metodoPago === 'BARRA' ? 'En barra' : 'Tarjeta simulada'}
+                    </span>
+                    <span className="text-[10px] font-mono text-[var(--color-texto-suave)] uppercase">
+                      {o.estadoPago}
+                    </span>
+                  </td>
                   <td className="px-3 py-3 font-mono font-bold text-[var(--color-primario)]">
                     ${o.total.toFixed(2)}
                   </td>
@@ -193,14 +304,21 @@ export default function AdminHistorialPedidos() {
                   </td>
                   <td className="px-3 py-3 text-right">
                     {o.tieneTicket ? (
-                      <button
-                        onClick={() => handleVerTicket(o.id)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[var(--color-accion)] hover:bg-[var(--color-fondo)] rounded-[var(--radio-chico)] border border-[var(--color-borde)] cursor-pointer"
-                        title="Ver ticket de venta"
-                      >
-                        <Printer className="w-3.5 h-3.5" />
-                        <span>Ticket ({o.ticketReimpresiones})</span>
-                      </button>
+                      <div className="inline-flex flex-col items-end">
+                        <button
+                          onClick={() => handleVerTicket(o.id)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[var(--color-accion)] hover:bg-[var(--color-fondo)] rounded-[var(--radio-chico)] border border-[var(--color-borde)] cursor-pointer"
+                          title="Ver ticket de venta"
+                        >
+                          <Printer className="w-3.5 h-3.5" />
+                          <span>Ticket ({o.ticketReimpresiones})</span>
+                        </button>
+                        {o.baristaNombre && (
+                          <span className="text-[10px] text-[var(--color-texto-suave)] mt-0.5 font-mono">
+                            {t.admin.despachadoPor}: {o.baristaNombre}
+                          </span>
+                        )}
+                      </div>
                     ) : (
                       <span className="text-[11px] text-[var(--color-texto-suave)] font-mono">
                         —
