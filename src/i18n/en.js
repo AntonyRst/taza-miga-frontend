@@ -11,7 +11,8 @@ export const en = {
     volver: 'Back',
     cerrar: 'Close',
     errorConexion: 'Could not connect to the server',
-    sinResultados: 'No results found'
+    sinResultados: 'No results found',
+    reintentar: 'Retry'
   },
   navegacion: {
     inicio: 'Menu',
@@ -276,6 +277,16 @@ export const en = {
     metodoPagoCol: 'Payment method',
     despachadoPor: 'Dispatched by',
     verTicketBtn: 'View receipt',
+    pedidoNumCol: 'Order #',
+    fechaCol: 'Date',
+    clienteCol: 'Customer',
+    sucursalModalidadCol: 'Branch / Type',
+    totalCol: 'Total',
+    estadoCol: 'Status',
+    ticketCol: 'Receipt',
+    sinPedidosHistorial: 'No orders found matching the selected filters',
+    tarjetaSimulada: 'Simulated card',
+    mesaLabel: 'Table',
     registroAuditoriaTitulo: 'Audit log',
     registroAuditoriaSubtitulo: 'Immutable log of critical actions (price changes, cancellations, passwords, transfers, deactivations).',
     filtrarPorAccion: 'Filter by action',
@@ -295,7 +306,19 @@ export const en = {
     accionTrasladoPersonal: 'Staff transfer',
     accionDesactivarSucursal: 'Branch deactivation',
     accionDesactivarUsuario: 'User deactivation',
-    accionDesactivarProducto: 'Product deactivation'
+    accionDesactivarProducto: 'Product deactivation',
+    resumenSubtitulo: 'Real figures calculated in database. Only delivered orders count (RN-30 to RN-35).',
+    al: 'to',
+    aplicarBtn: 'Apply',
+    sinVentasPeriodo: 'No sales in this period',
+    sinProductosPeriodo: 'No products sold in this period',
+    enMesa: 'Dine in',
+    paraLlevar: 'Takeaway',
+    enBarra: 'At counter',
+    tarjeta: 'Card',
+    despachos: 'dispatches',
+    cancelados: 'cancelled',
+    todasLasSucursales: 'All branches'
   },
   password: {
     titulo: 'Change Password',

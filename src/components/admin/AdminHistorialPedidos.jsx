@@ -238,21 +238,21 @@ export default function AdminHistorialPedidos() {
         </div>
       ) : pedidos.length === 0 ? (
         <div className="py-12 text-center text-xs text-[var(--color-texto-suave)] border border-dashed border-[var(--color-borde)] rounded-[var(--radio-chico)]">
-          No se encontraron pedidos con los filtros seleccionados
+          {t.admin.sinPedidosHistorial}
         </div>
       ) : (
         <div className="overflow-x-auto border border-[var(--color-borde)] rounded-[var(--radio-chico)]">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[var(--color-fondo)] text-[var(--color-texto-suave)] uppercase font-mono text-[11px] border-b border-[var(--color-borde)]">
+            <thead className="bg-[var(--color-fondo)] text-[var(--color-texto-suave)] font-mono text-[11px] border-b border-[var(--color-borde)]">
               <tr>
-                <th className="px-3 py-2.5">Pedido #</th>
-                <th className="px-3 py-2.5">Fecha</th>
-                <th className="px-3 py-2.5">Cliente</th>
-                <th className="px-3 py-2.5">Sucursal / Modalidad</th>
+                <th className="px-3 py-2.5">{t.admin.pedidoNumCol}</th>
+                <th className="px-3 py-2.5">{t.admin.fechaCol}</th>
+                <th className="px-3 py-2.5">{t.admin.clienteCol}</th>
+                <th className="px-3 py-2.5">{t.admin.sucursalModalidadCol}</th>
                 <th className="px-3 py-2.5">{t.admin.metodoPagoCol}</th>
-                <th className="px-3 py-2.5">Total</th>
-                <th className="px-3 py-2.5">Estado</th>
-                <th className="px-3 py-2.5 text-right">Ticket</th>
+                <th className="px-3 py-2.5">{t.admin.totalCol}</th>
+                <th className="px-3 py-2.5">{t.admin.estadoCol}</th>
+                <th className="px-3 py-2.5 text-right">{t.admin.ticketCol}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--color-borde)]">
@@ -275,14 +275,14 @@ export default function AdminHistorialPedidos() {
                   <td className="px-3 py-3 text-[var(--color-texto-suave)]">
                     <span>{o.sucursalNombre}</span>
                     <span className="block text-[11px] font-mono">
-                      {o.tipoEntrega === 'MESA' ? `Mesa ${o.numeroMesa}` : 'Para llevar'}
+                      {o.tipoEntrega === 'MESA' ? `${t.admin.mesaLabel} ${o.numeroMesa}` : t.admin.paraLlevar}
                     </span>
                   </td>
                   <td className="px-3 py-3">
                     <span className="font-medium text-[var(--color-primario)] block">
-                      {o.metodoPago === 'BARRA' ? 'En barra' : 'Tarjeta simulada'}
+                      {o.metodoPago === 'BARRA' ? t.admin.enBarra : t.admin.tarjetaSimulada}
                     </span>
-                    <span className="text-[10px] font-mono text-[var(--color-texto-suave)] uppercase">
+                    <span className="text-[10px] font-mono text-[var(--color-texto-suave)]">
                       {o.estadoPago}
                     </span>
                   </td>

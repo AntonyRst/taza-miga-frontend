@@ -153,7 +153,7 @@ export default function AdminAuditoria() {
             className="px-2.5 py-1 bg-red-100 hover:bg-red-200 rounded-[var(--radio-chico)] text-red-900 font-medium inline-flex items-center gap-1 cursor-pointer"
           >
             <RotateCw className="w-3 h-3" />
-            Reintentar
+            {t.comun.reintentar}
           </button>
         </div>
       ) : cargando ? (
@@ -167,7 +167,7 @@ export default function AdminAuditoria() {
       ) : (
         <div className="overflow-x-auto border border-[var(--color-borde)] rounded-[var(--radio-chico)]">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[var(--color-fondo)] text-[var(--color-texto-suave)] uppercase font-mono text-[11px] border-b border-[var(--color-borde)]">
+            <thead className="bg-[var(--color-fondo)] text-[var(--color-texto-suave)] font-mono text-[11px] border-b border-[var(--color-borde)]">
               <tr>
                 <th className="px-3 py-2.5">{t.admin.fechaHoraCol}</th>
                 <th className="px-3 py-2.5">{t.admin.usuarioResponsableCol}</th>

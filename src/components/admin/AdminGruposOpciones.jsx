@@ -209,7 +209,7 @@ export default function AdminGruposOpciones() {
         </div>
         <button
           onClick={abrirModalCrearGrupo}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--color-accion)] text-white text-xs font-semibold rounded-[var(--radio-chico)] hover:opacity-90 transition-opacity cursor-pointer shadow-sm"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--color-accion)] text-white text-xs font-semibold rounded-[var(--radio-chico)] hover:opacity-90 transition-opacity cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>{t.admin.nuevoGrupo}</span>
@@ -245,7 +245,7 @@ export default function AdminGruposOpciones() {
             return (
               <div
                 key={g.id}
-                className="border border-[var(--color-borde)] rounded-[var(--radio-medio)] bg-white overflow-hidden shadow-xs"
+                className="border border-[var(--color-borde)] rounded-[var(--radio-medio)] bg-white overflow-hidden"
               >
                 {/* Cabecera del Grupo */}
                 <div className="p-4 bg-[var(--color-fondo)]/30 flex items-center justify-between gap-3 border-b border-[var(--color-borde)]">
@@ -390,7 +390,7 @@ export default function AdminGruposOpciones() {
       {/* Modal Grupo */}
       {modalGrupoAbierto && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in duration-150">
+          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-150">
             <button
               onClick={() => setModalGrupoAbierto(false)}
               className="absolute top-4 right-4 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] cursor-pointer"
@@ -485,7 +485,7 @@ export default function AdminGruposOpciones() {
       {/* Modal Opción */}
       {modalOpcionAbierto && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in duration-150">
+          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-150">
             <button
               onClick={() => setModalOpcionAbierto(false)}
               className="absolute top-4 right-4 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] cursor-pointer"

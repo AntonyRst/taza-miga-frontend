@@ -11,7 +11,8 @@ export const es = {
     volver: 'Volver',
     cerrar: 'Cerrar',
     errorConexion: 'No se pudo conectar con el servidor',
-    sinResultados: 'No se encontraron resultados'
+    sinResultados: 'No se encontraron resultados',
+    reintentar: 'Reintentar'
   },
   navegacion: {
     inicio: 'Menú',
@@ -276,6 +277,16 @@ export const es = {
     metodoPagoCol: 'Método de pago',
     despachadoPor: 'Despachado por',
     verTicketBtn: 'Ver ticket',
+    pedidoNumCol: 'Pedido #',
+    fechaCol: 'Fecha',
+    clienteCol: 'Cliente',
+    sucursalModalidadCol: 'Sucursal / Modalidad',
+    totalCol: 'Total',
+    estadoCol: 'Estado',
+    ticketCol: 'Ticket',
+    sinPedidosHistorial: 'No se encontraron pedidos con los filtros seleccionados',
+    tarjetaSimulada: 'Tarjeta simulada',
+    mesaLabel: 'Mesa',
     registroAuditoriaTitulo: 'Bitácora de auditoría',
     registroAuditoriaSubtitulo: 'Registro inmutable de acciones críticas (cambios de precio, cancelaciones, contraseñas, traslados, desactivaciones).',
     filtrarPorAccion: 'Filtrar por acción',
@@ -295,7 +306,19 @@ export const es = {
     accionTrasladoPersonal: 'Traslado de personal',
     accionDesactivarSucursal: 'Desactivación de sucursal',
     accionDesactivarUsuario: 'Desactivación de usuario',
-    accionDesactivarProducto: 'Desactivación de producto'
+    accionDesactivarProducto: 'Desactivación de producto',
+    resumenSubtitulo: 'Cifras reales calculadas en la base de datos. Solo cuentan pedidos entregados (RN-30 a RN-35).',
+    al: 'al',
+    aplicarBtn: 'Aplicar',
+    sinVentasPeriodo: 'Sin ventas en este periodo',
+    sinProductosPeriodo: 'Sin productos vendidos en este periodo',
+    enMesa: 'En mesa',
+    paraLlevar: 'Para llevar',
+    enBarra: 'En barra',
+    tarjeta: 'Tarjeta',
+    despachos: 'despachos',
+    cancelados: 'cancelados',
+    todasLasSucursales: 'Todas las sucursales'
   },
   password: {
     titulo: 'Cambiar contraseña',

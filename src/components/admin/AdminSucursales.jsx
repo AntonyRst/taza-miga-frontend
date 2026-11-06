@@ -144,7 +144,7 @@ export default function AdminSucursales() {
           {sucursales.map((suc) => (
             <div
               key={suc.id}
-              className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4 flex flex-col justify-between gap-3 shadow-xs"
+              className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4 flex flex-col justify-between gap-3"
             >
               <div>
                 <div className="flex items-start justify-between gap-2">
@@ -301,7 +301,7 @@ function ModalSucursalLeaflet({ sucursal, onCerrar, onGuardado }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-      <div className="w-full max-w-2xl bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] shadow-2xl p-5 flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
+      <div className="w-full max-w-2xl bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-5 flex flex-col gap-4 max-h-[92vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-[var(--color-borde)]">
           <div className="flex items-center gap-2">
             <Store className="w-5 h-5 text-[var(--color-accion)]" />

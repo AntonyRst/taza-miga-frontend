@@ -363,7 +363,7 @@ function ModalFormPersonal({ empleado, sucursales, esDueno, onCerrar, onGuardado
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-      <div className="w-full max-w-md bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] shadow-xl p-5 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-md bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-5 flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-[var(--color-borde)]">
           <h3 className="font-serif font-bold text-lg text-[var(--color-primario)]">
             {empleado ? t.admin.editarEmpleado : t.admin.nuevoEmpleado}
@@ -551,7 +551,7 @@ function ModalResetPassword({ empleado, onCerrar, onExito }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-      <div className="w-full max-w-md bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] shadow-xl p-5 flex flex-col gap-4">
+      <div className="w-full max-w-md bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-5 flex flex-col gap-4">
         <div className="flex items-center justify-between pb-3 border-b border-[var(--color-borde)]">
           <div className="flex items-center gap-2 text-amber-700">
             <KeyRound className="w-5 h-5 shrink-0" />
@@ -672,7 +672,7 @@ function ModalTrasladarPersonal({ empleado, sucursales, onCerrar, onExito }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-      <div className="w-full max-w-md bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] shadow-xl p-5 flex flex-col gap-4">
+      <div className="w-full max-w-md bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-5 flex flex-col gap-4">
         <div className="flex items-center justify-between pb-3 border-b border-[var(--color-borde)]">
           <div className="flex items-center gap-2 text-indigo-700">
             <ArrowRightLeft className="w-5 h-5 shrink-0" />

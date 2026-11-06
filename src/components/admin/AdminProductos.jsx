@@ -219,7 +219,7 @@ export default function AdminProductos() {
         </div>
         <button
           onClick={abrirModalCrear}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--color-accion)] text-white text-xs font-semibold rounded-[var(--radio-chico)] hover:opacity-90 transition-opacity cursor-pointer shadow-sm"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-[var(--color-accion)] text-white text-xs font-semibold rounded-[var(--radio-chico)] hover:opacity-90 transition-opacity cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>{t.admin.nuevoProducto}</span>
@@ -396,7 +396,7 @@ export default function AdminProductos() {
       {/* Modal Producto */}
       {modalAbierto && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-lg w-full p-6 shadow-xl relative my-8 animate-in fade-in zoom-in duration-150">
+          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-lg w-full p-6 relative my-8 animate-in fade-in zoom-in duration-150">
             <button
               onClick={() => setModalAbierto(false)}
               className="absolute top-4 right-4 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] cursor-pointer"

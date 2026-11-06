@@ -115,7 +115,7 @@ export default function Admin() {
         </aside>
 
         {/* Panel de contenido de la sección activa */}
-        <main className="flex-1 bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4 sm:p-6 shadow-xs overflow-x-hidden">
+        <main className="flex-1 bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4 sm:p-6 overflow-x-hidden">
           {seccionActiva === 'resumen' && <AdminResumenVentas />}
           {seccionActiva === 'pedidos' && <AdminHistorialPedidos />}
           {seccionActiva === 'productos' && <AdminProductos />}
