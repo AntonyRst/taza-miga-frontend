@@ -249,13 +249,13 @@ export default function AdminProductos() {
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             placeholder={t.admin.buscarProducto}
-            className="w-full pl-9 pr-3 py-2 bg-white border border-[var(--color-borde)] rounded-[var(--radio-chico)] text-xs focus:outline-none focus:border-[var(--color-accion)]"
+            className="w-full pl-9 pr-3 py-2 bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] text-xs focus:outline-none focus:border-[var(--color-accion)]"
           />
         </div>
         <select
           value={categoriaFiltro}
           onChange={(e) => setCategoriaFiltro(e.target.value)}
-          className="px-3 py-2 bg-white border border-[var(--color-borde)] rounded-[var(--radio-chico)] text-xs focus:outline-none focus:border-[var(--color-accion)]"
+          className="px-3 py-2 bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] text-xs focus:outline-none focus:border-[var(--color-accion)] cursor-pointer"
         >
           <option value="">{t.admin.filtroTodasCategorias}</option>
           {categorias.map((c) => (
@@ -272,11 +272,11 @@ export default function AdminProductos() {
           {t.comun.cargando}
         </div>
       ) : productos.length === 0 ? (
-        <div className="p-8 text-center border border-dashed border-[var(--color-borde)] rounded-[var(--radio-medio)] text-xs text-[var(--color-texto-suave)]">
+        <div className="p-8 text-center border border-dashed border-[var(--color-borde)] rounded-[var(--radio-grande)] text-xs text-[var(--color-texto-suave)]">
           {t.admin.sinProductos}
         </div>
       ) : (
-        <div className="overflow-x-auto border border-[var(--color-borde)] rounded-[var(--radio-medio)] bg-white">
+        <div className="overflow-x-auto border border-[var(--color-borde)] rounded-[var(--radio-grande)] bg-[var(--color-superficie)] shadow-[var(--sombra-tarjeta)]">
           <table className="w-full text-left text-xs">
             <thead className="bg-[var(--color-fondo)] text-[var(--color-texto-suave)] border-b border-[var(--color-borde)] font-semibold uppercase tracking-wider text-[10px]">
               <tr>
@@ -395,8 +395,8 @@ export default function AdminProductos() {
 
       {/* Modal Producto */}
       {modalAbierto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-lg w-full p-6 relative my-8 animate-in fade-in zoom-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 overflow-y-auto">
+          <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] max-w-lg w-full p-6 relative my-8 shadow-xl animate-in fade-in zoom-in duration-150">
             <button
               onClick={() => setModalAbierto(false)}
               className="absolute top-4 right-4 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] cursor-pointer"
@@ -419,7 +419,7 @@ export default function AdminProductos() {
                   </label>
                   <select
                     {...register('categoria_id')}
-                    className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] bg-white focus:outline-none focus:border-[var(--color-accion)]"
+                    className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] bg-[var(--color-fondo)] focus:outline-none focus:border-[var(--color-accion)]"
                   >
                     {categorias.map((c) => (
                       <option key={c.id} value={c.id}>

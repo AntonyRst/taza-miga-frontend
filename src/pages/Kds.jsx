@@ -270,19 +270,28 @@ export default function Kds() {
   };
 
   return (
-    <div className="min-h-screen bg-[#181214] text-[#F5EDE8] flex flex-col font-sans select-none">
+    <div className="min-h-screen bg-[var(--color-barista-fondo)] text-[var(--color-texto-sobre-oscuro)] flex flex-col font-sans select-none">
       {/* Encabezado KDS oscuro según docs/diseno.md */}
-      <header className="bg-[#231B1D] border-b border-[#3D2E32] px-4 py-3 sm:px-6 flex items-center justify-between gap-4 sticky top-0 z-20">
+      <header className="bg-[var(--color-barista-superficie)] border-b border-[#3D2E32] px-4 py-3 sm:px-6 flex items-center justify-between gap-4 sticky top-0 z-20">
         <div className="flex items-center gap-3">
-          <Coffee className="w-6 h-6 text-[var(--color-accion)] shrink-0" />
+          <div className="w-9 h-9 rounded-full bg-[var(--color-barista-fondo)] border border-[#3D2E32] flex items-center justify-center text-[var(--color-accion)] shrink-0">
+            <Coffee className="w-5 h-5" />
+          </div>
           <div>
-            <h1 className="font-serif font-bold text-lg text-white leading-tight">
-              {t.kds.titulo}
-            </h1>
-            <div className="flex items-center gap-2 text-xs text-[#A8989C]">
-              <span className="font-mono text-[#D4A373]">
+            <div className="flex items-center gap-2">
+              <h1 className="font-serif font-bold text-lg text-white leading-tight">
+                {t.kds.titulo}
+              </h1>
+              <span className="text-[10px] px-2 py-0.5 rounded-[var(--radio-pildora)] bg-[var(--color-exito)]/25 text-emerald-300 border border-[var(--color-exito)]/40 font-bold uppercase tracking-wider">
+                {t.kds.chipKds}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-[#D5C9CC] mt-0.5">
+              <span className="font-mono text-[var(--color-acento)] font-semibold">
                 {sucursalNombre || 'Sucursal'}
               </span>
+              <span>•</span>
+              <span>{usuario?.nombre ? `${t.kds.operadorEnTurno} ${usuario.nombre}` : (usuario?.rol || '')}</span>
               <span>•</span>
               <span className="font-mono">{pedidos.length} pedidos activos</span>
             </div>
@@ -296,7 +305,7 @@ export default function Kds() {
             <select
               value={sucursalSeleccionada || ''}
               onChange={(e) => setSucursalSeleccionada(Number(e.target.value))}
-              className="text-xs bg-[#181214] border border-[#3D2E32] text-[#F5EDE8] rounded-[var(--radio-chico)] px-2 py-1 focus:outline-hidden"
+              className="text-xs bg-[var(--color-barista-fondo)] border border-[#3D2E32] text-[var(--color-texto-sobre-oscuro)] rounded-[var(--radio-chico)] px-2.5 py-1 focus:outline-hidden cursor-pointer"
             >
               {sucursalesDisponibles.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -309,7 +318,7 @@ export default function Kds() {
           {/* Selector de idioma */}
           <button
             onClick={() => cambiarIdioma(idioma === 'es' ? 'en' : 'es')}
-            className="text-xs px-2 py-1 rounded-[var(--radio-chico)] bg-[#3D2E32] text-[#F5EDE8] hover:text-white transition-colors cursor-pointer font-medium"
+            className="text-xs px-2.5 py-1 rounded-[var(--radio-chico)] bg-[#3D2E32] text-[var(--color-texto-sobre-oscuro)] hover:text-white transition-colors cursor-pointer font-medium"
             title="Cambiar idioma / Switch language"
           >
             {idioma === 'es' ? 'EN' : 'ES'}
@@ -331,7 +340,7 @@ export default function Kds() {
           {/* Cambiar contraseña */}
           <button
             onClick={() => setMostrarModalPassword(true)}
-            className="hidden sm:flex items-center gap-1.5 text-xs text-[#A8989C] hover:text-white transition-colors cursor-pointer"
+            className="hidden sm:flex items-center gap-1.5 text-xs text-[#C7B9BC] hover:text-white transition-colors cursor-pointer"
           >
             <KeyRound className="w-4 h-4" />
             <span>{t.password.titulo}</span>
@@ -340,7 +349,7 @@ export default function Kds() {
           {/* Refrescar manual */}
           <button
             onClick={() => cargarPedidos(true)}
-            className="p-1.5 text-[#A8989C] hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 text-[#C7B9BC] hover:text-white transition-colors cursor-pointer"
             title="Actualizar lista de pedidos"
           >
             <RotateCw className="w-4 h-4" />
@@ -349,7 +358,7 @@ export default function Kds() {
           {/* Cerrar sesión */}
           <button
             onClick={cerrarSesion}
-            className="flex items-center gap-1.5 text-xs text-[#A8989C] hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-[#C7B9BC] hover:text-white transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">{t.navegacion.cerrarSesion}</span>
@@ -381,7 +390,7 @@ export default function Kds() {
             <p className="text-sm">{t.kds.cargando}</p>
           </div>
         ) : pedidos.length === 0 ? (
-          <div className="h-96 flex flex-col items-center justify-center border border-dashed border-[#3D2E32] rounded-[var(--radio-medio)] text-[#A8989C] text-center p-6 bg-[#231B1D]">
+          <div className="h-96 flex flex-col items-center justify-center border border-dashed border-[#3D2E32] rounded-[var(--radio-grande)] text-[#C7B9BC] text-center p-6 bg-[var(--color-barista-superficie)]">
             <Coffee className="w-12 h-12 mb-3 opacity-30 text-[var(--color-accion)]" />
             <p className="text-sm max-w-md leading-relaxed">
               {t.kds.sinPedidos}

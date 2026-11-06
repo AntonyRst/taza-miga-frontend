@@ -152,11 +152,11 @@ export default function AdminCategorias() {
           {t.comun.cargando}
         </div>
       ) : categorias.length === 0 ? (
-        <div className="p-8 text-center border border-dashed border-[var(--color-borde)] rounded-[var(--radio-medio)] text-xs text-[var(--color-texto-suave)]">
+        <div className="p-8 text-center border border-dashed border-[var(--color-borde)] rounded-[var(--radio-grande)] text-xs text-[var(--color-texto-suave)]">
           {t.admin.sinCategorias}
         </div>
       ) : (
-        <div className="overflow-x-auto border border-[var(--color-borde)] rounded-[var(--radio-medio)] bg-white">
+        <div className="overflow-x-auto border border-[var(--color-borde)] rounded-[var(--radio-grande)] bg-[var(--color-superficie)] shadow-[var(--sombra-tarjeta)]">
           <table className="w-full text-left text-xs">
             <thead className="bg-[var(--color-fondo)] text-[var(--color-texto-suave)] border-b border-[var(--color-borde)] font-semibold uppercase tracking-wider text-[10px]">
               <tr>
@@ -214,8 +214,8 @@ export default function AdminCategorias() {
 
       {/* Modal Crear / Editar */}
       {modalAbierto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] max-w-md w-full p-6 relative shadow-xl animate-in fade-in zoom-in duration-150">
             <button
               onClick={() => setModalAbierto(false)}
               className="absolute top-4 right-4 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] cursor-pointer"
@@ -238,7 +238,7 @@ export default function AdminCategorias() {
                 <input
                   type="text"
                   {...register('nombre_es')}
-                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-none focus:border-[var(--color-accion)]"
+                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] bg-[var(--color-fondo)] focus:outline-none focus:border-[var(--color-accion)]"
                   placeholder="Ej. Café de Especialidad"
                 />
                 {errors.nombre_es && (
@@ -253,7 +253,7 @@ export default function AdminCategorias() {
                 <input
                   type="text"
                   {...register('nombre_en')}
-                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-none focus:border-[var(--color-accion)]"
+                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] bg-[var(--color-fondo)] focus:outline-none focus:border-[var(--color-accion)]"
                   placeholder="Ej. Specialty Coffee"
                 />
                 {errors.nombre_en && (
@@ -268,7 +268,7 @@ export default function AdminCategorias() {
                 <input
                   type="number"
                   {...register('orden')}
-                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-none focus:border-[var(--color-accion)]"
+                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] bg-[var(--color-fondo)] focus:outline-none focus:border-[var(--color-accion)]"
                   min="0"
                 />
                 {errors.orden && (
@@ -287,7 +287,7 @@ export default function AdminCategorias() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-1.5 bg-[var(--color-primario)] text-white font-semibold rounded-[var(--radio-chico)] hover:opacity-90 disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-1.5 bg-[var(--color-accion)] text-white font-semibold rounded-[var(--radio-chico)] hover:opacity-90 disabled:opacity-50 cursor-pointer shadow-xs"
                 >
                   {isSubmitting ? t.comun.cargando : t.comun.guardar}
                 </button>

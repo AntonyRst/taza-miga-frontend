@@ -98,16 +98,16 @@ export default function AdminResumenVentas() {
           </p>
         </div>
 
-        {/* Botones de periodo */}
+        {/* Botones de periodo como chips redondeados con activo en ámbar (docs/diseno.md) */}
         <div className="flex flex-wrap items-center gap-2">
           {['hoy', '7dias', 'mes', 'personalizado'].map((p) => (
             <button
               key={p}
               onClick={() => setPeriodo(p)}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-[var(--radio-chico)] transition-colors cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-[var(--radio-pildora)] border transition-all cursor-pointer ${
                 periodo === p
-                  ? 'bg-[var(--color-primario)] text-white'
-                  : 'bg-[var(--color-fondo)] text-[var(--color-texto-suave)] hover:bg-[var(--color-borde)]'
+                  ? 'bg-[var(--color-accion)] text-white border-[var(--color-accion)] shadow-xs'
+                  : 'bg-[var(--color-superficie)] text-[var(--color-texto-suave)] border-[var(--color-borde)] hover:bg-[var(--color-fondo)]'
               }`}
             >
               {p === 'hoy'
@@ -174,64 +174,64 @@ export default function AdminResumenVentas() {
         </div>
       ) : (
         <>
-          {/* Cifras principales (KPIs) sobrias sin sombras de color (docs/diseno.md) */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+          {/* Cifras principales (KPIs) con esquinas redondeadas según tarjetas de catálogo (docs/diseno.md) */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
             {/* Ventas totales (RN-30) */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] p-3.5">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-4 shadow-[var(--sombra-tarjeta)]">
               <span className="text-[11px] font-mono text-[var(--color-texto-suave)] block mb-1">
                 {t.admin.ventasTotales}
               </span>
-              <p className="text-xl font-bold font-mono text-[var(--color-primario)] tabular-nums">
+              <p className="text-2xl font-serif font-bold text-[var(--color-primario)] tabular-nums">
                 ${cifras.totalVentas.toFixed(2)}
               </p>
             </div>
 
             {/* Pedidos entregados */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] p-3.5">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-4 shadow-[var(--sombra-tarjeta)]">
               <span className="text-[11px] font-mono text-[var(--color-texto-suave)] block mb-1">
                 {t.admin.pedidosEntregados}
               </span>
-              <p className="text-xl font-bold font-mono text-[var(--color-primario)] tabular-nums">
+              <p className="text-2xl font-serif font-bold text-[var(--color-primario)] tabular-nums">
                 {cifras.totalPedidosEntregados}
               </p>
             </div>
 
             {/* Ticket promedio (RN-31) */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] p-3.5">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-4 shadow-[var(--sombra-tarjeta)]">
               <span className="text-[11px] font-mono text-[var(--color-texto-suave)] block mb-1">
                 {t.admin.ticketPromedio}
               </span>
-              <p className="text-xl font-bold font-mono text-[var(--color-primario)] tabular-nums">
+              <p className="text-2xl font-serif font-bold text-[var(--color-primario)] tabular-nums">
                 ${cifras.ticketPromedio.toFixed(2)}
               </p>
             </div>
 
             {/* Tiempo promedio de preparación (RN-33) */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] p-3.5">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-4 shadow-[var(--sombra-tarjeta)]">
               <span className="text-[11px] font-mono text-[var(--color-texto-suave)] block mb-1">
                 {t.admin.tiempoPrepPromedio}
               </span>
-              <p className="text-xl font-bold font-mono text-[var(--color-primario)] tabular-nums">
-                {cifras.tiempoPromedioPreparacionMin} min
+              <p className="text-2xl font-serif font-bold text-[var(--color-primario)] tabular-nums">
+                {cifras.tiempoPromedioPreparacionMin} <span className="text-xs font-sans font-normal text-[var(--color-texto-suave)]">min</span>
               </p>
             </div>
 
             {/* Tiempo promedio de espera total (RN-33) */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] p-3.5">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-4 shadow-[var(--sombra-tarjeta)]">
               <span className="text-[11px] font-mono text-[var(--color-texto-suave)] block mb-1">
                 {t.admin.tiempoEsperaPromedio}
               </span>
-              <p className="text-xl font-bold font-mono text-[var(--color-primario)] tabular-nums">
-                {cifras.tiempoPromedioEsperaMin} min
+              <p className="text-2xl font-serif font-bold text-[var(--color-primario)] tabular-nums">
+                {cifras.tiempoPromedioEsperaMin} <span className="text-xs font-sans font-normal text-[var(--color-texto-suave)]">min</span>
               </p>
             </div>
 
-            {/* Tasa de cancelación (RN-34) */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] p-3.5">
+            {/* Tasa de cancelación (RN-34) con color semántico */}
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-4 shadow-[var(--sombra-tarjeta)]">
               <span className="text-[11px] font-mono text-[var(--color-texto-suave)] block mb-1">
                 {t.admin.tasaCancelacion}
               </span>
-              <p className="text-xl font-bold font-mono text-rose-700 tabular-nums">
+              <p className="text-2xl font-serif font-bold text-[var(--color-error)] tabular-nums">
                 {cifras.tasaCancelacion}%
               </p>
             </div>
@@ -256,43 +256,47 @@ export default function AdminResumenVentas() {
             </div>
           )}
 
-          {/* Gráficos y Desgloses (RN-32, RN-35) */}
+          {/* Gráficos y Desgloses (RN-32, RN-35, docs/diseno.md) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
             {/* Gráfico 1: Ventas por día o por hora */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-5 shadow-[var(--sombra-tarjeta)]">
               <h3 className="font-serif font-bold text-sm text-[var(--color-primario)] mb-3">
                 {periodo === 'hoy' ? t.admin.graficoVentasHora : t.admin.graficoVentasDia}
               </h3>
-              <div className="h-60 w-full text-xs">
-                <ResponsiveContainer width="100%" height="100%">
-                  {periodo === 'hoy' ? (
-                    <BarChart data={desgloses.ventasPorHora || []}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-borde)" />
-                      <XAxis dataKey="hora" stroke="var(--color-texto-suave)" />
-                      <YAxis stroke="var(--color-texto-suave)" />
-                      <Tooltip />
-                      <Bar dataKey="totalVentas" fill="var(--color-accion)" name="Ventas ($)" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  ) : (
-                    <LineChart data={desgloses.ventasPorDia || []}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-borde)" />
-                      <XAxis dataKey="fecha" stroke="var(--color-texto-suave)" />
-                      <YAxis stroke="var(--color-texto-suave)" />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="totalVentas" stroke="var(--color-accion)" strokeWidth={2} name="Ventas ($)" />
-                    </LineChart>
-                  )}
-                </ResponsiveContainer>
+              <div className="h-60 w-full text-xs flex items-center justify-center">
+                {((periodo === 'hoy' ? desgloses.ventasPorHora : desgloses.ventasPorDia) || []).some((d) => Number(d.totalVentas) > 0) ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    {periodo === 'hoy' ? (
+                      <BarChart data={desgloses.ventasPorHora || []}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-borde)" />
+                        <XAxis dataKey="hora" stroke="var(--color-texto-suave)" />
+                        <YAxis stroke="var(--color-texto-suave)" />
+                        <Tooltip />
+                        <Bar dataKey="totalVentas" fill="var(--color-accion)" name="Ventas ($)" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    ) : (
+                      <LineChart data={desgloses.ventasPorDia || []}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-borde)" />
+                        <XAxis dataKey="fecha" stroke="var(--color-texto-suave)" />
+                        <YAxis stroke="var(--color-texto-suave)" />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="totalVentas" stroke="var(--color-accion)" strokeWidth={2} name="Ventas ($)" />
+                      </LineChart>
+                    )}
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-xs text-[var(--color-texto-suave)] text-center">{t.admin.sinVentasPeriodo}</p>
+                )}
               </div>
             </div>
 
             {/* Gráfico 2: Ventas por Categoría */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-5 shadow-[var(--sombra-tarjeta)]">
               <h3 className="font-serif font-bold text-sm text-[var(--color-primario)] mb-3">
                 {t.admin.graficoCategorias}
               </h3>
               <div className="h-60 w-full text-xs flex items-center justify-center">
-                {desgloses.ventasPorCategoria && desgloses.ventasPorCategoria.length > 0 ? (
+                {desgloses.ventasPorCategoria && desgloses.ventasPorCategoria.some((c) => Number(c.totalVentas) > 0) ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={desgloses.ventasPorCategoria} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--color-borde)" />
@@ -303,13 +307,13 @@ export default function AdminResumenVentas() {
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p className="text-xs text-[var(--color-texto-suave)]">{t.admin.sinVentasPeriodo}</p>
+                  <p className="text-xs text-[var(--color-texto-suave)] text-center">{t.admin.sinVentasPeriodo}</p>
                 )}
               </div>
             </div>
 
             {/* Lista: Productos más vendidos (RN-32) */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-5 shadow-[var(--sombra-tarjeta)]">
               <h3 className="font-serif font-bold text-sm text-[var(--color-primario)] mb-3">
                 {t.admin.topProductos}
               </h3>
@@ -322,7 +326,7 @@ export default function AdminResumenVentas() {
                   {topProductos.map((prod, idx) => (
                     <div
                       key={prod.productoId || idx}
-                      className="flex items-center justify-between text-xs p-2 bg-[var(--color-fondo)] rounded-[var(--radio-chico)] border border-[var(--color-borde)]"
+                      className="flex items-center justify-between text-xs p-2.5 bg-[var(--color-fondo)] rounded-[var(--radio-chico)] border border-[var(--color-borde)]"
                     >
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-[var(--color-accion)] w-4 text-center">
@@ -347,7 +351,7 @@ export default function AdminResumenVentas() {
             </div>
 
             {/* Modalidad y Método de Pago (RN-35) */}
-            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4 flex flex-col justify-between">
+            <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] p-5 shadow-[var(--sombra-tarjeta)] flex flex-col justify-between">
               <div>
                 <h3 className="font-serif font-bold text-sm text-[var(--color-primario)] mb-3">
                   {t.admin.graficoModalidad} & {t.admin.graficoMetodosPago}

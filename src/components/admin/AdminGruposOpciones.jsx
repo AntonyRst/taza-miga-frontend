@@ -245,10 +245,10 @@ export default function AdminGruposOpciones() {
             return (
               <div
                 key={g.id}
-                className="border border-[var(--color-borde)] rounded-[var(--radio-medio)] bg-white overflow-hidden"
+                className="border border-[var(--color-borde)] rounded-[var(--radio-grande)] bg-[var(--color-superficie)] overflow-hidden shadow-[var(--sombra-tarjeta)]"
               >
                 {/* Cabecera del Grupo */}
-                <div className="p-4 bg-[var(--color-fondo)]/30 flex items-center justify-between gap-3 border-b border-[var(--color-borde)]">
+                <div className="p-4 bg-[var(--color-fondo)]/40 flex items-center justify-between gap-3 border-b border-[var(--color-borde)]">
                   <div
                     onClick={() => toggleExpandir(g.id)}
                     className="flex items-center gap-2.5 cursor-pointer select-none flex-1"
@@ -290,7 +290,7 @@ export default function AdminGruposOpciones() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => abrirModalCrearOpcion(g)}
-                      className="flex items-center gap-1 px-2.5 py-1 bg-white border border-[var(--color-borde)] text-[var(--color-primario)] text-xs font-medium rounded-[var(--radio-chico)] hover:bg-[var(--color-fondo)] cursor-pointer"
+                      className="flex items-center gap-1 px-2.5 py-1 bg-[var(--color-superficie)] border border-[var(--color-borde)] text-[var(--color-primario)] text-xs font-medium rounded-[var(--radio-chico)] hover:bg-[var(--color-fondo)] cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5 text-[var(--color-accion)]" />
                       <span>{t.admin.agregarOpcion}</span>
@@ -317,7 +317,7 @@ export default function AdminGruposOpciones() {
 
                 {/* Lista de Opciones Hijas */}
                 {expandido && (
-                  <div className="p-4 bg-white">
+                  <div className="p-4 bg-[var(--color-superficie)]">
                     {g.opciones?.length === 0 ? (
                       <p className="text-xs text-[var(--color-texto-suave)] italic text-center py-2">
                         Aún no hay opciones en este grupo. Agrega una con el botón "+ Agregar opción".
@@ -389,8 +389,8 @@ export default function AdminGruposOpciones() {
 
       {/* Modal Grupo */}
       {modalGrupoAbierto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] max-w-md w-full p-6 relative shadow-xl animate-in fade-in zoom-in duration-150">
             <button
               onClick={() => setModalGrupoAbierto(false)}
               className="absolute top-4 right-4 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] cursor-pointer"
@@ -413,7 +413,7 @@ export default function AdminGruposOpciones() {
                 <input
                   type="text"
                   {...formGrupo.register('nombre_es')}
-                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-none focus:border-[var(--color-accion)]"
+                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] bg-[var(--color-fondo)] focus:outline-none focus:border-[var(--color-accion)]"
                   placeholder="Ej. Tipo de leche"
                 />
                 {formGrupo.formState.errors.nombre_es && (
@@ -428,7 +428,7 @@ export default function AdminGruposOpciones() {
                 <input
                   type="text"
                   {...formGrupo.register('nombre_en')}
-                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-none focus:border-[var(--color-accion)]"
+                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] bg-[var(--color-fondo)] focus:outline-none focus:border-[var(--color-accion)]"
                   placeholder="Ej. Milk type"
                 />
                 {formGrupo.formState.errors.nombre_en && (
@@ -442,7 +442,7 @@ export default function AdminGruposOpciones() {
                 </label>
                 <select
                   {...formGrupo.register('tipo_seleccion')}
-                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-none focus:border-[var(--color-accion)] bg-white"
+                  className="w-full px-3 py-2 border border-[var(--color-borde)] rounded-[var(--radio-chico)] focus:outline-none focus:border-[var(--color-accion)] bg-[var(--color-fondo)]"
                 >
                   <option value="UNICA">{t.admin.tipoUnica}</option>
                   <option value="MULTIPLE">{t.admin.tipoMultiple}</option>
@@ -472,7 +472,7 @@ export default function AdminGruposOpciones() {
                 <button
                   type="submit"
                   disabled={formGrupo.formState.isSubmitting}
-                  className="px-4 py-1.5 bg-[var(--color-primario)] text-white font-semibold rounded-[var(--radio-chico)] hover:opacity-90 disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-1.5 bg-[var(--color-accion)] text-white font-semibold rounded-[var(--radio-chico)] hover:opacity-90 disabled:opacity-50 cursor-pointer shadow-xs"
                 >
                   {formGrupo.formState.isSubmitting ? t.comun.cargando : t.comun.guardar}
                 </button>
@@ -484,8 +484,8 @@ export default function AdminGruposOpciones() {
 
       {/* Modal Opción */}
       {modalOpcionAbierto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white border border-[var(--color-borde)] rounded-[var(--radio-medio)] max-w-md w-full p-6 relative animate-in fade-in zoom-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] max-w-md w-full p-6 relative shadow-xl animate-in fade-in zoom-in duration-150">
             <button
               onClick={() => setModalOpcionAbierto(false)}
               className="absolute top-4 right-4 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] cursor-pointer"

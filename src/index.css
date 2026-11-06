@@ -1,38 +1,68 @@
 @import "tailwindcss";
 
 :root {
-  --color-primario: #2C1A1D;
-  --color-fondo: #FDFBF7;
-  --color-superficie: #FFFFFF;
+  /* Paleta aprobada (docs/diseno.md) */
+  --color-fondo: #F6F0E6;
+  --color-superficie: #FDFBF7;
+  --color-texto-sobre-oscuro: #F5EFE6;
   --color-texto: #1F1A1B;
   --color-texto-suave: #6B5E62;
   --color-borde: #E7DFD8;
+  --color-primario: #2C1A1D;
+  --color-primario-fin: #422227;
   --color-accion: #C47335;
+  --color-acento: #D4AF37;
   --color-exito: #4E6E58;
   --color-error: #B91C1C;
+  --color-info: #2563EB;
+  --color-barista-fondo: #171214;
+  --color-barista-superficie: #241C1E;
+
+  /* Formas y radios */
   --radio-chico: 6px;
   --radio-medio: 10px;
+  --radio-grande: 16px;
+  --radio-pildora: 9999px;
+
+  /* Sombras y resplandores tokenizados */
+  --sombra-tarjeta: 0 2px 8px -2px rgba(44, 26, 29, 0.08);
+  --brillo-urgencia: 0 0 14px rgba(185, 28, 28, 0.45);
+  --espaciado-etiqueta: 0.08em;
+
+  /* Tipografía */
+  --fuente-titulo: "Young Serif", serif;
+  --fuente-texto: "Figtree", sans-serif;
+  --fuente-mono: ui-monospace, SFMono-Regular, monospace;
 }
 
 @theme {
-  --font-serif: "Young Serif", serif;
-  --font-sans: "Figtree", sans-serif;
+  --font-serif: var(--fuente-titulo);
+  --font-sans: var(--fuente-texto);
+  --font-mono: var(--fuente-mono);
   --color-primario: var(--color-primario);
+  --color-primario-fin: var(--color-primario-fin);
   --color-fondo: var(--color-fondo);
   --color-superficie: var(--color-superficie);
+  --color-texto-sobre-oscuro: var(--color-texto-sobre-oscuro);
   --color-texto: var(--color-texto);
   --color-texto-suave: var(--color-texto-suave);
   --color-borde: var(--color-borde);
   --color-accion: var(--color-accion);
+  --color-acento: var(--color-acento);
   --color-exito: var(--color-exito);
   --color-error: var(--color-error);
+  --color-info: var(--color-info);
+  --color-barista-fondo: var(--color-barista-fondo);
+  --color-barista-superficie: var(--color-barista-superficie);
   --radius-chico: var(--radio-chico);
   --radius-medio: var(--radio-medio);
+  --radius-grande: var(--radio-grande);
+  --radius-pildora: var(--radio-pildora);
 }
 
 body {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--fuente-texto);
   background-color: var(--color-fondo);
   color: var(--color-texto);
 }
@@ -40,4 +70,25 @@ body {
 /* Números con ancho fijo para precios y temporizadores */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Textura sutil de puntos sobre fondo oscuro para el hero */
+.textura-puntos {
+  background-image: radial-gradient(rgba(245, 239, 230, 0.12) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Modo accesible de fuente ampliada A+/A- (docs/diseno.md) */
+html.fuente-ampliada {
+  font-size: 112%;
+}
+
+/* Respeto estricto a preferencia de reducción de movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

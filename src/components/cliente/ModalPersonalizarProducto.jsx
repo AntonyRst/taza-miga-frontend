@@ -161,48 +161,55 @@ export default function ModalPersonalizarProducto({ producto, onCerrar, onAgrega
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
       <div
-        className="relative w-full max-w-lg bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] shadow-lg flex flex-col max-h-[90vh] overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150"
+        className="relative w-full max-w-lg bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-grande)] shadow-xl flex flex-col max-h-[92vh] overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-150"
         role="dialog"
         aria-modal="true"
         aria-labelledby="titulo-personalizar"
       >
-        {/* Encabezado del modal */}
-        <div className="relative p-4 sm:p-5 border-b border-[var(--color-borde)] flex items-start justify-between gap-4">
-          <div className="pr-6">
-            <h2
-              id="titulo-personalizar"
-              className="text-lg font-serif font-bold text-[var(--color-primario)]"
-            >
-              {nombreProducto}
-            </h2>
-            <p className="text-xs font-mono font-semibold text-[var(--color-texto-suave)] mt-0.5">
-              {t.catalogo.precioBase}: ${Number(producto.precio).toFixed(2)}
-            </p>
-          </div>
-          <button
-            onClick={onCerrar}
-            className="p-1.5 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] hover:bg-[var(--color-fondo)] rounded-[var(--radio-chico)] transition-colors cursor-pointer"
-            aria-label={t.comun.cerrar}
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Contenido con scroll */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 text-[var(--color-texto)]">
-          {/* Imagen y descripción */}
+        {/* Cabecera con foto y degradado oscuro (docs/diseno.md) */}
+        <div className="relative w-full h-44 sm:h-48 overflow-hidden bg-[var(--color-fondo)] shrink-0">
           {producto.imagenUrl ? (
             <img
               src={producto.imagenUrl}
               alt={nombreProducto}
-              className="w-full h-44 object-cover rounded-[var(--radio-chico)] border border-[var(--color-borde)]"
+              className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-28 bg-[var(--color-fondo)] rounded-[var(--radio-chico)] border border-[var(--color-borde)] flex items-center justify-center text-[var(--color-texto-suave)]">
-              <ImageIcon className="w-8 h-8 opacity-40" />
+            <div className="w-full h-full flex items-center justify-center text-[var(--color-texto-suave)]">
+              <ImageIcon className="w-10 h-10 opacity-30" />
             </div>
           )}
 
+          {/* Degradado superior e inferior para legibilidad */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40 pointer-events-none" />
+
+          {/* Botón de cerrar */}
+          <button
+            onClick={onCerrar}
+            className="absolute top-3 right-3 p-1.5 text-white/80 hover:text-white bg-black/40 hover:bg-black/60 rounded-[var(--radio-pildora)] transition-colors cursor-pointer"
+            aria-label={t.comun.cerrar}
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* Título en serif y precio en dorado sobre foto */}
+          <div className="absolute bottom-3.5 left-4 right-4 flex items-end justify-between gap-3">
+            <div>
+              <h2
+                id="titulo-personalizar"
+                className="text-xl sm:text-2xl font-serif font-bold text-white drop-shadow-sm leading-tight"
+              >
+                {nombreProducto}
+              </h2>
+            </div>
+            <span className="font-mono font-bold text-sm sm:text-base text-[var(--color-acento)] px-2.5 py-1 rounded-[var(--radio-pildora)] bg-black/60 border border-white/20 shrink-0">
+              ${Number(producto.precio).toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        {/* Contenido con scroll */}
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-5 flex-1 text-[var(--color-texto)]">
           {descripcionProducto && (
             <p className="text-xs text-[var(--color-texto-suave)] leading-relaxed">
               {descripcionProducto}
@@ -219,7 +226,7 @@ export default function ModalPersonalizarProducto({ producto, onCerrar, onAgrega
 
           {/* Grupos de personalización (HU-07) */}
           {producto.grupos && producto.grupos.length > 0 && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               {producto.grupos.map((grupo) => {
                 const nombreGrupo = idioma === 'en' ? grupo.nombreEn : grupo.nombreEs;
                 const esUnica = grupo.tipoSeleccion === 'UNICA';
@@ -228,11 +235,14 @@ export default function ModalPersonalizarProducto({ producto, onCerrar, onAgrega
                 return (
                   <div
                     key={grupo.id}
-                    className="p-3.5 bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-chico)]"
+                    className="p-3.5 bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-medio)]"
                   >
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-serif font-bold text-[var(--color-primario)]">
+                        <span
+                          className="text-[11px] font-semibold uppercase text-[var(--color-primario)]"
+                          style={{ letterSpacing: 'var(--espaciado-etiqueta)' }}
+                        >
                           {nombreGrupo}
                         </span>
                         {grupo.obligatorio ? (
@@ -250,7 +260,7 @@ export default function ModalPersonalizarProducto({ producto, onCerrar, onAgrega
                       </span>
                     </div>
 
-                    {/* Opciones del grupo */}
+                    {/* Opciones del grupo con selección activa resaltada en ámbar */}
                     <div className="space-y-1.5">
                       {grupo.opciones.map((opcion) => {
                         const nombreOpcion = idioma === 'en' ? opcion.nombreEn : opcion.nombreEs;
@@ -275,14 +285,14 @@ export default function ModalPersonalizarProducto({ producto, onCerrar, onAgrega
                             }`}
                           >
                             <div className="flex items-center gap-2.5">
-                              {/* Casilla o radio visual */}
+                              {/* Casilla o radio visual sin blanco puro */}
                               <div
                                 className={`w-4 h-4 flex items-center justify-center border transition-colors ${
                                   esUnica ? 'rounded-full' : 'rounded-[3px]'
                                 } ${
                                   seleccionada
                                     ? 'bg-[var(--color-accion)] border-[var(--color-accion)] text-white'
-                                    : 'border-[var(--color-borde)] bg-white'
+                                    : 'border-[var(--color-borde)] bg-[var(--color-fondo)]'
                                 }`}
                               >
                                 {seleccionada && (
