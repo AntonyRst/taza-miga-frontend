@@ -66,12 +66,71 @@ export function AuthProvider({ children }) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const urlCompleta = endpoint.startsWith('http') ? endpoint : `${apiUrl}${endpoint}`;
-      const respuesta = await fetch(urlCompleta, { ...opciones, headers });
+      // Normalizar URL: evitar duplicar el prefijo /api si apiUrl termina en /api
+      let urlCompleta;
+      if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+        urlCompleta = endpoint;
+      } else {
+        const cleanApiUrl = apiUrl.replace(/\/+$/, '');
+        const endpointNormalizado = endpoint.replace(/^\/?api(\/|$)/, '/');
+        const rutaFinal = endpointNormalizado.startsWith('/') ? endpointNormalizado : `/${endpointNormalizado}`;
+        urlCompleta = `${cleanApiUrl}${rutaFinal}`;
+      }
+
+      let respuesta;
+      try {
+        respuesta = await fetch(urlCompleta, { ...opciones, headers });
+      } catch (errRed) {
+        // En caso de caída de red o servidor no disponible, retornar objeto compatible seguro
+        return {
+          ok: false,
+          status: 503,
+          statusText: 'Service Unavailable',
+          json: async () => ({
+            error: 'No se pudo conectar con el servidor',
+            mensaje: 'No se pudo conectar con el servidor'
+          }),
+          text: async () => 'No se pudo conectar con el servidor'
+        };
+      }
 
       if (respuesta.status === 401) {
         cerrarSesion();
       }
+
+      // Proteger respuesta.text() y respuesta.json() contra errores de HTML o respuestas vacías
+      let cuerpoCache = null;
+      const originalText = respuesta.text.bind(respuesta);
+      respuesta.text = async () => {
+        if (cuerpoCache === null) {
+          cuerpoCache = await originalText();
+        }
+        return cuerpoCache;
+      };
+
+      let jsonCache = null;
+      respuesta.json = async () => {
+        if (jsonCache !== null) {
+          return jsonCache;
+        }
+        try {
+          const texto = await respuesta.text();
+          if (!texto || texto.trim().length === 0) {
+            jsonCache = {};
+          } else {
+            jsonCache = JSON.parse(texto);
+          }
+        } catch {
+          // Si el servidor devolvió HTML (por ejemplo, errores 502/504 de proxies o rutas 404 no capturadas),
+          // se retorna un objeto JSON seguro para prevenir un SyntaxError en JSON.parse
+          const fallbackMensaje = `Respuesta no válida del servidor (${respuesta.status})`;
+          jsonCache = {
+            error: fallbackMensaje,
+            mensaje: fallbackMensaje
+          };
+        }
+        return jsonCache;
+      };
 
       return respuesta;
     },

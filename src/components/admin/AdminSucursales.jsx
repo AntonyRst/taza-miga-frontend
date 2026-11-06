@@ -68,8 +68,8 @@ export default function AdminSucursales() {
     setError(null);
     try {
       const res = await fetchConToken('/api/admin/sucursales');
-      if (!res.ok) throw new Error('Error al cargar las sucursales');
       const data = await res.json();
+      if (!res.ok) throw new Error(data.mensaje || data.error || 'Error al cargar las sucursales');
       setSucursales(data);
     } catch (err) {
       setError(err.message);
@@ -91,7 +91,7 @@ export default function AdminSucursales() {
         body: JSON.stringify({ activa: !sucursal.activa })
       });
       const datos = await res.json();
-      if (!res.ok) throw new Error(datos.mensaje || 'Error al actualizar sucursal');
+      if (!res.ok) throw new Error(datos.mensaje || datos.error || 'Error al actualizar sucursal');
       cargarSucursales();
     } catch (err) {
       alert(err.message);
@@ -289,7 +289,7 @@ function ModalSucursalLeaflet({ sucursal, onCerrar, onGuardado }) {
       });
 
       const datos = await res.json();
-      if (!res.ok) throw new Error(datos.mensaje || 'Error al guardar la sucursal');
+      if (!res.ok) throw new Error(datos.mensaje || datos.error || 'Error al guardar la sucursal');
 
       onGuardado();
     } catch (err) {
