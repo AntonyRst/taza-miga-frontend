@@ -100,7 +100,14 @@ export const es = {
     procesando: 'Procesando pedido...',
     errorMesa: 'El número de mesa debe estar entre 1 y',
     errorCampos: 'Por favor completa todos los campos requeridos',
-    tarjetaNotaDemo: 'Ambiente de demostración: ningún dato de tarjeta se almacena ni se procesa realmente.'
+    tarjetaNotaDemo: 'Ambiente de demostración: ningún dato de tarjeta se almacena ni se procesa realmente.',
+    mesaVerificada: 'Mesa verificada por QR',
+    mesaSoloConQr: 'Solo disponible escaneando el código QR de tu mesa',
+    mesaBloqueadaDirecto: 'Para ordenar en mesa, escanea el código QR físico ubicado en tu mesa.',
+    pagoBarraSoloMesa: 'El pago en barra solo está disponible para pedidos en mesa con QR.',
+    pagoAnticipadoObligatorio: 'Pago anticipado obligatorio con tarjeta para pedidos para llevar.',
+    mesaFija: 'Mesa fija asignada por QR',
+    requiereQrMesa: 'Requiere QR de mesa'
   },
   seguimiento: {
     titulo: 'Seguimiento de tu pedido',

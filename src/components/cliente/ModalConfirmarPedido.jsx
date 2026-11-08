@@ -11,7 +11,10 @@ import {
   AlertCircle,
   Clock,
   MapPin,
-  Check
+  Check,
+  Lock,
+  QrCode,
+  CheckCircle2
 } from 'lucide-react';
 
 export default function ModalConfirmarPedido({ abierto, onCerrar }) {
@@ -20,13 +23,29 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  // Detección de parámetros de mesa por código QR (?sucursalId=1&mesa=4&token=...)
+  const paramSucursal = searchParams.get('sucursal') || searchParams.get('sucursalId');
+  const paramMesa = searchParams.get('mesa');
+  const paramToken = searchParams.get('token') || searchParams.get('tokenMesa') || searchParams.get('hash');
+  const tieneMesaVerificada = Boolean(paramMesa && paramToken && Number(paramMesa) > 0);
+
   const [sucursales, setSucursales] = useState([]);
   const [sucursalSeleccionadaId, setSucursalSeleccionadaId] = useState('');
-  const [tipoEntrega, setTipoEntrega] = useState('MESA');
-  const [numeroMesa, setNumeroMesa] = useState('');
+  const [tipoEntrega, setTipoEntrega] = useState(tieneMesaVerificada ? 'MESA' : 'LLEVAR');
+  const [numeroMesa, setNumeroMesa] = useState(paramMesa || '');
+  const [tokenMesa, setTokenMesa] = useState(paramToken || '');
   const [horaRecogida, setHoraRecogida] = useState('');
   const [nombreCliente, setNombreCliente] = useState('');
-  const [metodoPago, setMetodoPago] = useState('BARRA');
+  const [metodoPago, setMetodoPago] = useState(tieneMesaVerificada ? 'BARRA' : 'TARJETA_DEMO');
+
+  // Si cambia el tipo de entrega y es LLEVAR, forzar TARJETA_DEMO (pago anticipado obligatorio)
+  const cambiarTipoEntrega = (nuevoTipo) => {
+    if (nuevoTipo === 'MESA' && !tieneMesaVerificada) return;
+    setTipoEntrega(nuevoTipo);
+    if (nuevoTipo === 'LLEVAR') {
+      setMetodoPago('TARJETA_DEMO');
+    }
+  };
 
   // Campos simulados de tarjeta (HU-11)
   const [tarjetaNumero, setTarjetaNumero] = useState('4532 •••• •••• 8892');
@@ -50,19 +69,20 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
         const data = await res.json();
         setSucursales(data);
 
-        // Pre-rellenar desde parámetros URL (?sucursal=1&mesa=4) si el cliente escaneó QR (HU-11)
-        const paramSucursal = searchParams.get('sucursal');
-        const paramMesa = searchParams.get('mesa');
-
+        // Pre-rellenar sucursal si viene en el QR o tomar la primera
         if (paramSucursal && data.some((s) => s.id === Number(paramSucursal))) {
           setSucursalSeleccionadaId(Number(paramSucursal));
         } else if (data.length > 0) {
           setSucursalSeleccionadaId(data[0].id);
         }
 
-        if (paramMesa) {
+        if (tieneMesaVerificada) {
           setNumeroMesa(paramMesa);
+          setTokenMesa(paramToken);
           setTipoEntrega('MESA');
+        } else {
+          setTipoEntrega('LLEVAR');
+          setMetodoPago('TARJETA_DEMO');
         }
       } catch (err) {
         setError(err.message);
@@ -70,7 +90,7 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
     }
 
     cargarSucursales();
-  }, [abierto, apiUrl, searchParams, t.comun.errorConexion]);
+  }, [abierto, apiUrl, paramSucursal, paramMesa, paramToken, tieneMesaVerificada, t.comun.errorConexion]);
 
   if (!abierto) return null;
 
@@ -93,11 +113,20 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
     }
 
     if (tipoEntrega === 'MESA') {
+      if (!tieneMesaVerificada || !tokenMesa) {
+        setError(t.confirmacion.mesaBloqueadaDirecto);
+        return;
+      }
       const num = Number(numeroMesa);
       if (!num || num < 1 || num > sucursalActual.cantidadMesas) {
         setError(`${t.confirmacion.errorMesa} ${sucursalActual.cantidadMesas}`);
         return;
       }
+    }
+
+    if (tipoEntrega === 'LLEVAR' && metodoPago === 'BARRA') {
+      setError(t.confirmacion.pagoAnticipadoObligatorio);
+      return;
     }
 
     let horaRecogidaIso = null;
@@ -121,6 +150,7 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
         nombreCliente: nombreLimpio,
         tipoEntrega,
         numeroMesa: tipoEntrega === 'MESA' ? Number(numeroMesa) : null,
+        tokenMesa: tipoEntrega === 'MESA' ? tokenMesa : null,
         horaRecogida: horaRecogidaIso,
         metodoPago,
         lineas: lineas.map((linea) => ({
@@ -213,33 +243,49 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={() => setTipoEntrega('MESA')}
-                className={`py-2 px-3 border rounded-[var(--radio-chico)] text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
-                  tipoEntrega === 'MESA'
-                    ? 'bg-[var(--color-primario)] text-white border-[var(--color-primario)]'
-                    : 'bg-[var(--color-fondo)] text-[var(--color-texto-suave)] border-[var(--color-borde)] hover:bg-[var(--color-superficie)]'
+                disabled={!tieneMesaVerificada}
+                onClick={() => cambiarTipoEntrega('MESA')}
+                title={!tieneMesaVerificada ? t.confirmacion.mesaSoloConQr : ''}
+                className={`py-2 px-3 border rounded-[var(--radio-chico)] text-xs font-semibold flex items-center justify-center gap-2 transition-colors ${
+                  !tieneMesaVerificada
+                    ? 'opacity-40 cursor-not-allowed bg-[var(--color-fondo)] text-[var(--color-texto-suave)] border-[var(--color-borde)]'
+                    : tipoEntrega === 'MESA'
+                    ? 'bg-[var(--color-primario)] text-white border-[var(--color-primario)] cursor-pointer'
+                    : 'bg-[var(--color-fondo)] text-[var(--color-texto-suave)] border-[var(--color-borde)] hover:bg-[var(--color-superficie)] cursor-pointer'
                 }`}
               >
-                <UtensilsCrossed className="w-4 h-4" />
+                {!tieneMesaVerificada ? (
+                  <Lock className="w-3.5 h-3.5 shrink-0" />
+                ) : (
+                  <UtensilsCrossed className="w-4 h-4 shrink-0" />
+                )}
                 <span>{t.confirmacion.enMesa}</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => setTipoEntrega('LLEVAR')}
+                onClick={() => cambiarTipoEntrega('LLEVAR')}
                 className={`py-2 px-3 border rounded-[var(--radio-chico)] text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-colors ${
                   tipoEntrega === 'LLEVAR'
                     ? 'bg-[var(--color-primario)] text-white border-[var(--color-primario)]'
                     : 'bg-[var(--color-fondo)] text-[var(--color-texto-suave)] border-[var(--color-borde)] hover:bg-[var(--color-superficie)]'
                 }`}
               >
-                <ShoppingBag className="w-4 h-4" />
+                <ShoppingBag className="w-4 h-4 shrink-0" />
                 <span>{t.confirmacion.paraLlevar}</span>
               </button>
             </div>
+
+            {/* Aviso cuando se ingresa de forma directa sin QR de mesa */}
+            {!tieneMesaVerificada && (
+              <p className="text-[11px] text-[var(--color-texto-suave)] flex items-center gap-1.5 pt-0.5">
+                <QrCode className="w-3.5 h-3.5 text-[var(--color-accion)] shrink-0" />
+                <span>{t.confirmacion.mesaBloqueadaDirecto}</span>
+              </p>
+            )}
           </div>
 
-          {/* Sucursal y Número de Mesa / Hora de Recogida */}
+          {/* Sucursal y Mesa asignada / Hora de Recogida */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-[var(--color-texto)] mb-1">
@@ -249,7 +295,8 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
                 <select
                   value={sucursalSeleccionadaId}
                   onChange={(e) => setSucursalSeleccionadaId(e.target.value)}
-                  className="w-full px-3 py-2 bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] text-xs text-[var(--color-texto)] focus:outline-none focus:border-[var(--color-accion)]"
+                  disabled={tieneMesaVerificada}
+                  className="w-full px-3 py-2 bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] text-xs text-[var(--color-texto)] focus:outline-none focus:border-[var(--color-accion)] disabled:opacity-75"
                   required
                 >
                   {sucursales.map((s) => (
@@ -272,21 +319,19 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
                 <label className="block text-xs font-semibold text-[var(--color-texto)] mb-1">
                   {t.confirmacion.numeroMesaLabel}
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max={sucursalActual?.cantidadMesas || 99}
-                  value={numeroMesa}
-                  onChange={(e) => setNumeroMesa(e.target.value)}
-                  placeholder={t.confirmacion.numeroMesaPlaceholder}
-                  className="w-full px-3 py-2 bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] text-xs text-[var(--color-texto)] focus:outline-none focus:border-[var(--color-accion)]"
-                  required
-                />
-                {sucursalActual && (
-                  <p className="text-[10px] text-[var(--color-texto-suave)] mt-1">
-                    {t.confirmacion.mesasDisponibles} {sucursalActual.cantidadMesas}
-                  </p>
-                )}
+                {/* Visualización fija de solo lectura con verificación por QR (sin campo abierto editable) */}
+                <div className="w-full px-3 py-2 bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-chico)] text-xs font-semibold text-[var(--color-primario)] flex items-center justify-between">
+                  <span className="font-mono text-sm">
+                    {t.confirmacion.numeroMesaLabel} #{numeroMesa}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full font-sans font-medium">
+                    <CheckCircle2 className="w-3 h-3" />
+                    <span>{t.confirmacion.mesaVerificada}</span>
+                  </span>
+                </div>
+                <p className="text-[10px] text-[var(--color-texto-suave)] mt-1">
+                  {t.confirmacion.mesaFija}
+                </p>
               </div>
             ) : (
               <div>
@@ -331,19 +376,29 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
                 type="button"
+                disabled={tipoEntrega !== 'MESA' || !tieneMesaVerificada}
                 onClick={() => setMetodoPago('BARRA')}
-                className={`p-2.5 border rounded-[var(--radio-chico)] text-left cursor-pointer transition-colors ${
-                  metodoPago === 'BARRA'
-                    ? 'border-[var(--color-primario)] bg-stone-50'
-                    : 'border-[var(--color-borde)] bg-[var(--color-fondo)] hover:bg-[var(--color-superficie)]'
+                title={tipoEntrega !== 'MESA' || !tieneMesaVerificada ? t.confirmacion.pagoBarraSoloMesa : ''}
+                className={`p-2.5 border rounded-[var(--radio-chico)] text-left transition-colors ${
+                  tipoEntrega !== 'MESA' || !tieneMesaVerificada
+                    ? 'opacity-40 cursor-not-allowed border-[var(--color-borde)] bg-[var(--color-fondo)]'
+                    : metodoPago === 'BARRA'
+                    ? 'border-[var(--color-primario)] bg-stone-50 cursor-pointer'
+                    : 'border-[var(--color-borde)] bg-[var(--color-fondo)] hover:bg-[var(--color-superficie)] cursor-pointer'
                 }`}
               >
                 <div className="flex items-center gap-1.5 font-semibold text-xs text-[var(--color-primario)]">
-                  <Banknote className="w-4 h-4 text-[var(--color-accion)]" />
+                  {tipoEntrega !== 'MESA' || !tieneMesaVerificada ? (
+                    <Lock className="w-3.5 h-3.5 text-[var(--color-texto-suave)]" />
+                  ) : (
+                    <Banknote className="w-4 h-4 text-[var(--color-accion)]" />
+                  )}
                   <span>{t.confirmacion.pagoBarra}</span>
                 </div>
                 <p className="text-[10px] text-[var(--color-texto-suave)] mt-1">
-                  {t.confirmacion.pagoBarraDesc}
+                  {tipoEntrega !== 'MESA' || !tieneMesaVerificada
+                    ? t.confirmacion.pagoBarraSoloMesa
+                    : t.confirmacion.pagoBarraDesc}
                 </p>
               </button>
 
@@ -365,6 +420,14 @@ export default function ModalConfirmarPedido({ abierto, onCerrar }) {
                 </p>
               </button>
             </div>
+
+            {/* Aviso de pago anticipado obligatorio si es para llevar */}
+            {(tipoEntrega === 'LLEVAR' || !tieneMesaVerificada) && (
+              <p className="text-[11px] text-[var(--color-texto-suave)] flex items-center gap-1.5 pt-0.5">
+                <CreditCard className="w-3.5 h-3.5 text-[var(--color-accion)] shrink-0" />
+                <span>{t.confirmacion.pagoAnticipadoObligatorio}</span>
+              </p>
+            )}
 
             {/* Formulario simulado de tarjeta de demostración */}
             {metodoPago === 'TARJETA_DEMO' && (

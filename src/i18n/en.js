@@ -100,7 +100,14 @@ export const en = {
     procesando: 'Processing order...',
     errorMesa: 'Table number must be between 1 and',
     errorCampos: 'Please complete all required fields',
-    tarjetaNotaDemo: 'Demo environment: no card data is stored or processed.'
+    tarjetaNotaDemo: 'Demo environment: no card data is stored or processed.',
+    mesaVerificada: 'Table verified via QR',
+    mesaSoloConQr: 'Only available by scanning your table QR code',
+    mesaBloqueadaDirecto: 'To order dine-in, scan the physical QR code on your table.',
+    pagoBarraSoloMesa: 'Pay at counter is only available for dine-in orders with QR.',
+    pagoAnticipadoObligatorio: 'Prepayment required for takeout orders.',
+    mesaFija: 'Assigned table via QR',
+    requiereQrMesa: 'Requires table QR'
   },
   seguimiento: {
     titulo: 'Order Tracking',
