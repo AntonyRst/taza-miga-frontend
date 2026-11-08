@@ -73,8 +73,7 @@ export default function Admin() {
       id: 'sucursales',
       etiqueta: t.admin.pestanaSucursales,
       descripcion: t.admin.descSucursales,
-      icono: Store,
-      soloDueno: true
+      icono: Store
     },
     {
       id: 'auditoria',

@@ -10,8 +10,11 @@ import {
   Check,
   X,
   RotateCw,
-  AlertCircle
+  AlertCircle,
+  QrCode,
+  Printer
 } from 'lucide-react';
+import QrSvg from '../../utils/qrSvg.jsx';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -53,8 +56,9 @@ function SelectorCoordenadas({ posicion, onSeleccionar }) {
 }
 
 export default function AdminSucursales() {
-  const { fetchConToken } = useAuth();
+  const { fetchConToken, usuario } = useAuth();
   const { t } = useIdioma();
+  const esDueno = usuario?.rol === 'DUENO';
 
   const [sucursales, setSucursales] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -62,6 +66,7 @@ export default function AdminSucursales() {
 
   const [mostrarModal, setMostrarModal] = useState(false);
   const [sucursalEditando, setSucursalEditando] = useState(null);
+  const [sucursalParaQrs, setSucursalParaQrs] = useState(null);
 
   const cargarSucursales = useCallback(async () => {
     setCargando(true);
@@ -111,16 +116,18 @@ export default function AdminSucursales() {
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setSucursalEditando(null);
-            setMostrarModal(true);
-          }}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[var(--color-accion)] hover:bg-[#B88746] text-[#2C1A1D] text-xs font-bold rounded-[var(--radio-chico)] transition-colors cursor-pointer self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>{t.admin.nuevaSucursal}</span>
-        </button>
+        {esDueno && (
+          <button
+            onClick={() => {
+              setSucursalEditando(null);
+              setMostrarModal(true);
+            }}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[var(--color-accion)] hover:bg-[#B88746] text-[#2C1A1D] text-xs font-bold rounded-[var(--radio-chico)] transition-colors cursor-pointer self-start sm:self-auto"
+          >
+            <Plus className="w-4 h-4" />
+            <span>{t.admin.nuevaSucursal}</span>
+          </button>
+        )}
       </div>
 
       {error && (
@@ -154,16 +161,28 @@ export default function AdminSucursales() {
                       {suc.nombre}
                     </h3>
                   </div>
-                  <button
-                    onClick={() => handleToggleActiva(suc)}
-                    className={`text-[11px] px-2 py-0.5 rounded-[var(--radio-chico)] font-medium cursor-pointer transition-colors ${
-                      suc.activa
-                        ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                        : 'bg-rose-100 text-rose-800 hover:bg-rose-200'
-                    }`}
-                  >
-                    {suc.activa ? 'Activa' : 'Inactiva'}
-                  </button>
+                  {esDueno ? (
+                    <button
+                      onClick={() => handleToggleActiva(suc)}
+                      className={`text-[11px] px-2 py-0.5 rounded-[var(--radio-chico)] font-medium cursor-pointer transition-colors ${
+                        suc.activa
+                          ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                          : 'bg-rose-100 text-rose-800 hover:bg-rose-200'
+                      }`}
+                    >
+                      {suc.activa ? 'Activa' : 'Inactiva'}
+                    </button>
+                  ) : (
+                    <span
+                      className={`text-[11px] px-2 py-0.5 rounded-[var(--radio-chico)] font-medium ${
+                        suc.activa
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-rose-100 text-rose-800'
+                      }`}
+                    >
+                      {suc.activa ? 'Activa' : 'Inactiva'}
+                    </span>
+                  )}
                 </div>
 
                 <p className="text-xs text-[var(--color-texto-suave)] mt-1.5 flex items-start gap-1.5">
@@ -198,21 +217,39 @@ export default function AdminSucursales() {
                 )}
               </div>
 
-              <div className="flex justify-end pt-2 border-t border-[var(--color-borde)]">
+              <div className="flex items-center justify-between pt-2 border-t border-[var(--color-borde)]">
                 <button
-                  onClick={() => {
-                    setSucursalEditando(suc);
-                    setMostrarModal(true);
-                  }}
-                  className="flex items-center gap-1 text-xs font-semibold text-[var(--color-accion)] hover:underline cursor-pointer"
+                  onClick={() => setSucursalParaQrs(suc)}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-primario)] hover:text-[var(--color-accion)] transition-colors cursor-pointer"
                 >
-                  <Edit2 className="w-3.5 h-3.5" />
-                  <span>{t.admin.editarSucursal}</span>
+                  <QrCode className="w-3.5 h-3.5 text-[var(--color-accion)]" />
+                  <span>{t.admin.generarQrsMesas}</span>
                 </button>
+
+                {esDueno && (
+                  <button
+                    onClick={() => {
+                      setSucursalEditando(suc);
+                      setMostrarModal(true);
+                    }}
+                    className="flex items-center gap-1 text-xs font-semibold text-[var(--color-accion)] hover:underline cursor-pointer"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    <span>{t.admin.editarSucursal}</span>
+                  </button>
+                )}
               </div>
             </div>
           ))}
         </div>
+      )}
+
+      {/* Modal Generar QRs de Mesas e Imprimir */}
+      {sucursalParaQrs && (
+        <ModalQrsMesas
+          sucursal={sucursalParaQrs}
+          onCerrar={() => setSucursalParaQrs(null)}
+        />
       )}
 
       {/* Modal Crear / Editar Sucursal con Leaflet (HU-20) */}
@@ -436,6 +473,212 @@ function ModalSucursalLeaflet({ sucursal, onCerrar, onGuardado }) {
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  );
+}
+
+// Subcomponente Modal para Generar e Imprimir Códigos QR de Mesas
+function ModalQrsMesas({ sucursal, onCerrar }) {
+  const { fetchConToken } = useAuth();
+  const { t } = useIdioma();
+  const [mesas, setMesas] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function cargarQrs() {
+      try {
+        setCargando(true);
+        setError(null);
+        const res = await fetchConToken(`/api/admin/sucursales/${sucursal.id}/mesas-qr`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || data.mensaje || 'Error al cargar QRs de mesas');
+        setMesas(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setCargando(false);
+      }
+    }
+    cargarQrs();
+  }, [sucursal.id, fetchConToken]);
+
+  const handleImprimir = () => {
+    window.print();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      {/* Estilos para impresión @media print */}
+      <style>{`
+        @media print {
+          body * {
+            visibility: hidden !important;
+          }
+          #area-impresion-qrs, #area-impresion-qrs * {
+            visibility: visible !important;
+          }
+          #area-impresion-qrs {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            background: white !important;
+            padding: 10mm !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            border: none !important;
+            z-index: 999999 !important;
+          }
+          .no-print {
+            display: none !important;
+          }
+          .cuadricula-print {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 6mm !important;
+            page-break-inside: auto !important;
+          }
+          .tarjeta-mesa-print {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            border: 1.5px dashed #666 !important;
+            background: white !important;
+            color: #2C1A1D !important;
+            padding: 6mm !important;
+            border-radius: 8px !important;
+            text-align: center !important;
+          }
+        }
+      `}</style>
+
+      {/* Fondo oscuro para visualización en pantalla */}
+      <div
+        onClick={onCerrar}
+        className="fixed inset-0 bg-black/60 backdrop-blur-2xs transition-opacity no-print"
+        aria-hidden="true"
+      />
+
+      {/* Ventana modal / Área imprimible */}
+      <div
+        id="area-impresion-qrs"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-qrs-modal"
+        className="relative w-full max-w-4xl max-h-[90vh] bg-[var(--color-superficie)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] shadow-2xl p-5 sm:p-6 my-6 z-10 flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-150 overflow-hidden"
+      >
+        {/* Cabecera del modal (en pantalla) */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[var(--color-borde)] pb-3.5 no-print">
+          <div>
+            <div className="flex items-center gap-2">
+              <QrCode className="w-5 h-5 text-[var(--color-accion)] shrink-0" />
+              <h2
+                id="titulo-qrs-modal"
+                className="text-base sm:text-lg font-serif font-bold text-[var(--color-primario)]"
+              >
+                {t.admin.tituloModalQrs} — {sucursal.nombre}
+              </h2>
+            </div>
+            <p className="text-xs text-[var(--color-texto-suave)] mt-0.5">
+              {t.admin.subtituloModalQrs}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-end sm:self-auto">
+            <button
+              onClick={handleImprimir}
+              disabled={cargando || mesas.length === 0}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[var(--color-accion)] hover:bg-[#B88746] text-[#2C1A1D] text-xs font-bold rounded-[var(--radio-chico)] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Printer className="w-4 h-4" />
+              <span>{t.admin.imprimirQrs}</span>
+            </button>
+
+            <button
+              onClick={onCerrar}
+              className="p-1.5 text-[var(--color-texto-suave)] hover:text-[var(--color-primario)] hover:bg-[var(--color-fondo)] rounded-[var(--radio-chico)] transition-colors cursor-pointer"
+              aria-label={t.comun.cerrar}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Título simple visible solo al imprimir en papel */}
+        <div className="hidden print:block text-center border-b pb-3 mb-2">
+          <h1 className="text-xl font-serif font-bold text-[#2C1A1D]">
+            {sucursal.nombre}
+          </h1>
+          <p className="text-xs text-stone-600 mt-0.5">
+            {t.admin.tituloModalQrs} — Taza & Miga
+          </p>
+        </div>
+
+        {/* Mensaje de error */}
+        {error && (
+          <div className="p-3 bg-rose-50 text-rose-700 border border-rose-200 rounded-[var(--radio-chico)] text-xs flex items-center gap-2 no-print">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Contenido con scroll en pantalla */}
+        <div className="flex-1 overflow-y-auto pr-1">
+          {cargando ? (
+            <div className="py-16 flex flex-col items-center justify-center gap-2 text-xs text-[var(--color-texto-suave)]">
+              <RotateCw className="w-6 h-6 animate-spin text-[var(--color-accion)]" />
+              <span>{t.admin.cargandoQrs}</span>
+            </div>
+          ) : mesas.length === 0 ? (
+            <div className="py-12 text-center text-xs text-[var(--color-texto-suave)] border border-dashed border-[var(--color-borde)] rounded-[var(--radio-chico)]">
+              {t.admin.sinMesasRegistradas}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 cuadricula-print">
+              {mesas.map((m) => (
+                <div
+                  key={m.mesa}
+                  className="tarjeta-mesa-print bg-[var(--color-fondo)] border border-[var(--color-borde)] rounded-[var(--radio-medio)] p-4 flex flex-col items-center justify-between text-center gap-3 transition-shadow"
+                >
+                  {/* Encabezado de la tarjeta */}
+                  <div className="w-full flex items-center justify-between border-b border-[var(--color-borde)]/60 pb-2 text-[11px] text-[var(--color-texto-suave)] font-medium">
+                    <span className="flex items-center gap-1 truncate">
+                      <Store className="w-3.5 h-3.5 text-[var(--color-accion)] shrink-0" />
+                      <span className="truncate">{sucursal.nombre}</span>
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wider font-mono bg-[var(--color-superficie)] px-1.5 py-0.5 rounded border border-[var(--color-borde)]">
+                      Taza & Miga
+                    </span>
+                  </div>
+
+                  {/* Número de mesa */}
+                  <div className="pt-1">
+                    <h3 className="font-serif font-bold text-lg text-[var(--color-primario)]">
+                      {t.admin.mesaNumero}{m.mesa}
+                    </h3>
+                  </div>
+
+                  {/* Gráfico del código QR vectorial en SVG */}
+                  <div className="p-2.5 bg-white rounded-[var(--radio-chico)] border border-stone-200 shadow-2xs flex items-center justify-center">
+                    <QrSvg valor={m.url} tamano={140} />
+                  </div>
+
+                  {/* Instrucción para el cliente */}
+                  <div className="space-y-1">
+                    <p className="text-xs font-semibold text-[var(--color-primario)]">
+                      {t.admin.escanearParaOrdenar}
+                    </p>
+                    <p className="text-[10px] text-[var(--color-texto-suave)] font-mono truncate max-w-[200px]">
+                      Token: {m.token.slice(0, 10)}...{m.token.slice(-6)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
